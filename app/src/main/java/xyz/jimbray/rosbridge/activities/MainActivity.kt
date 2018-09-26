@@ -35,17 +35,17 @@ class MainActivity : BaseActivity(), MainContract.IMainView {
     fun initViews() {
         btn_publish_chatter.setOnClickListener {
             //RosBridgeClientManager.getInstance().publishTopic("chatter", ChatterData("1212121"))
-            mPresenter?.publishTopic("chatter", ChatterData("11111222222"))
+            mPresenter?.publishTopic("/chatter", ChatterData("11111222222"))
         }
 
         btn_subscribe_chatter.setOnClickListener {
             //RosBridgeClientManager.getInstance().subscribeTopic("chatter", onChatterMessageReceiedListener)
-            mPresenter?.subscribeTopic("chatter")
+            mPresenter?.subscribeTopic("/chatter")
         }
 
         btn_ubsubscribe_chatter.setOnClickListener {
             //RosBridgeClientManager.getInstance().unSubscribeTopic("chatter", onChatterMessageReceiedListener)
-            mPresenter?.unSubscribeTopic("chatter")
+            mPresenter?.unSubscribeTopic("/chatter")
         }
 
         btn_call_add_two_ints.setOnClickListener {
@@ -54,6 +54,10 @@ class MainActivity : BaseActivity(), MainContract.IMainView {
 
         btn_call_get_time.setOnClickListener {
             RosBridgeClientManager.getInstance().callGetTime()
+        }
+
+        btn_turtle_controller.setOnClickListener {
+            TurtleControllerActivity.startActivity(this@MainActivity)
         }
     }
 
@@ -65,24 +69,36 @@ class MainActivity : BaseActivity(), MainContract.IMainView {
 
     override fun rosConnected() {
         Log.d(TAG, "onConnect")
-        layout_connecting.visibility = View.GONE
+        runOnUiThread {
+            layout_content.visibility = View.VISIBLE
+            layout_connecting.visibility = View.GONE
+        }
     }
 
     override fun rosDisconnected() {
         Log.d(TAG, "onDisconnect")
-        tv_connecting_text.text = "ROS disconnected!"
+        runOnUiThread {
+            tv_connecting_text.text = "ROS disconnected!"
+        }
+
     }
 
     override fun rosConnectError(ex: Exception) {
         Log.d(TAG, "onError")
-        tv_connecting_text.text = "ROS connect error!"
+        runOnUiThread {
+            tv_connecting_text.text = "ROS connect error!"
+        }
+
     }
 
     override fun chatterTopicMessageReceived(data_str: String?) {
-        if (!TextUtils.isEmpty(data_str)) {
-            //val chatterData = ChatterData(data_str)
-            val chatterData = mGson.fromJson(data_str, ChatterData::class.java)
-            Log.d(TAG, chatterData.data)
+        runOnUiThread {
+            if (!TextUtils.isEmpty(data_str)) {
+                //val chatterData = ChatterData(data_str)
+                val chatterData = mGson.fromJson(data_str, ChatterData::class.java)
+                Log.d(TAG, chatterData.data)
+            }
         }
+
     }
 }

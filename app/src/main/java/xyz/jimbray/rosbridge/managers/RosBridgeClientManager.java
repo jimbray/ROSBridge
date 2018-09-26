@@ -133,14 +133,17 @@ public class RosBridgeClientManager {
 
     public <T> void publishTopic(String topicName, T msg) {
         PublishTopicObject<T> publishTopicObject = new PublishTopicObject<>();
-        publishTopicObject.setTopic("/" + topicName);
+        publishTopicObject.setTopic(topicName);
         publishTopicObject.setMsg(msg);
 
         String msg_str = mGson.toJson(publishTopicObject);
         if (mRosBridgeClient != null) {
+            Log.d(TAG, msg_str);
             mRosBridgeClient.send(msg_str);
             //mRosBridgeClient.send("{\"msg\":\"12121212\",\"op\":\"publish\",\"topic\":\"/chatter\"}");
             //mRosBridgeClient.send("{\"op\":\"publish\",\"topic\":\"/chatter\",\"msg\":{\"data\":\"11111\"}}");
+
+            //mRosBridgeClient.send("{\"op\":\"publish\",\"topic\":\"/turtle1/cmd_vel\",\"msg\":{\"linear\":{\"x\":2.0,\"y\":0.0,\"z\":0.0},\"angular\":{\"x\":0.0,\"y\":0.0,\"z\":1.8}}}");
         }
 
 
@@ -167,7 +170,7 @@ public class RosBridgeClientManager {
 
         //json方式
         SubscribeTopicObject subscribeTopicObject = new SubscribeTopicObject();
-        subscribeTopicObject.setTopic("/" + topicName);
+        subscribeTopicObject.setTopic(topicName);
 
         String msg_str = mGson.toJson(subscribeTopicObject);
         if (mRosBridgeClient != null) {
@@ -183,7 +186,7 @@ public class RosBridgeClientManager {
 
     public void unSubscribeTopic(String topicName, OnRosMessageListener listener) {
         UnSubscribeTopicObject unSubscribeTopicObject = new UnSubscribeTopicObject();
-        unSubscribeTopicObject.setTopic("/" + topicName);
+        unSubscribeTopicObject.setTopic(topicName);
 
         String msg_str = mGson.toJson(unSubscribeTopicObject);
         if (mRosBridgeClient != null) {

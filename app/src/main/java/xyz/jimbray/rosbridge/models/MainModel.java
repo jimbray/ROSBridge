@@ -2,6 +2,8 @@ package xyz.jimbray.rosbridge.models;
 
 import com.jilk.ros.ROSClient;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
 
 /**
@@ -18,43 +20,55 @@ public class MainModel implements RosOperationModel {
     }
 
     @Override
-    public void connect2ROS(String url, int port, final ROSClient.ConnectionStatusListener listener) {
-        mRoslientManager.connect(url, port, new ROSClient.ConnectionStatusListener() {
+    public void connect2ROS(final String url, final int port, final ROSClient.ConnectionStatusListener listener) {
+        new Thread(new Runnable() {
             @Override
-            public void onConnect() {
-                listener.onConnect();
-            }
+            public void run() {
+                mRoslientManager.connect(url, port, new ROSClient.ConnectionStatusListener() {
+                    @Override
+                    public void onConnect() {
+                        listener.onConnect();
+                    }
 
-            @Override
-            public void onDisconnect(boolean normal, String reason, int code) {
-                listener.onDisconnect(normal, reason, code);
-            }
+                    @Override
+                    public void onDisconnect(boolean normal, String reason, int code) {
+                        listener.onDisconnect(normal, reason, code);
+                    }
 
-            @Override
-            public void onError(Exception ex) {
-                listener.onError(ex);
+                    @Override
+                    public void onError(Exception ex) {
+                        listener.onError(ex);
+                    }
+                });
             }
-        });
+        }).start();
+
     }
 
     @Override
     public void autoConnect2ROS(final ROSClient.ConnectionStatusListener listener) {
-        mRoslientManager.connect("172.16.95.101", new ROSClient.ConnectionStatusListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onConnect() {
-                listener.onConnect();
-            }
+            public void run() {
+                mRoslientManager.connect("172.16.95.101", new ROSClient.ConnectionStatusListener() {
+                    @Override
+                    public void onConnect() {
+                        listener.onConnect();
+                    }
 
-            @Override
-            public void onDisconnect(boolean normal, String reason, int code) {
-                listener.onDisconnect(normal, reason, code);
-            }
+                    @Override
+                    public void onDisconnect(boolean normal, String reason, int code) {
+                        listener.onDisconnect(normal, reason, code);
+                    }
 
-            @Override
-            public void onError(Exception ex) {
-                listener.onError(ex);
+                    @Override
+                    public void onError(Exception ex) {
+                        listener.onError(ex);
+                    }
+                });
             }
-        });
+        }).start();
+
     }
 
     @Override
