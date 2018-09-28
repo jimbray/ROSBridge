@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.jilk.ros.Service;
 import com.jilk.ros.Topic;
 import com.jilk.ros.message.Empty;
+import com.jilk.ros.message.Message;
 import com.jilk.ros.rosapi.message.GetTime;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
 
@@ -17,6 +18,7 @@ import xyz.jimbray.rosbridge.App;
 import xyz.jimbray.rosbridge.messages.AddTwoInstRequest;
 import xyz.jimbray.rosbridge.messages.AddTwoIntsResponse;
 import xyz.jimbray.rosbridge.messages.AndroidChatter;
+import xyz.jimbray.rosbridge.ros_common.AdvertiseTopicObject;
 import xyz.jimbray.rosbridge.ros_common.PublishTopicObject;
 import xyz.jimbray.rosbridge.ros_common.SubscribeTopicObject;
 import xyz.jimbray.rosbridge.ros_common.UnSubscribeTopicObject;
@@ -148,6 +150,12 @@ public class RosBridgeClientManager {
 
 
 
+    }
+
+    public <T> void advertiseTopic(String topicName, T data_type) {
+        AdvertiseTopicObject<T> topic = new AdvertiseTopicObject<>(topicName, data_type, mRosBridgeClient);
+        topic.setMessage_type(data_type);
+        topic.advertise();
     }
 
     // 还是需要看看如何设计为 泛型

@@ -14,6 +14,7 @@ import xyz.jimbray.rosbridge.R
 import xyz.jimbray.rosbridge.contracts.MainContract
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager
 import xyz.jimbray.rosbridge.contracts.MainContract.IMainPresenter
+import xyz.jimbray.rosbridge.messages.AndroidChatter
 import xyz.jimbray.rosbridge.presenters.MainPresenter
 
 class MainActivity : BaseActivity(), MainContract.IMainView {
@@ -58,6 +59,10 @@ class MainActivity : BaseActivity(), MainContract.IMainView {
 
         btn_turtle_controller.setOnClickListener {
             TurtleControllerActivity.startActivity(this@MainActivity)
+        }
+
+        btn_advertise_topic.setOnClickListener {
+            RosBridgeClientManager.getInstance().advertiseTopic("/android_chatter", AndroidChatter())
         }
     }
 
