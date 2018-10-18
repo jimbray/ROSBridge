@@ -1,5 +1,7 @@
 package xyz.jimbray.rosbridge.presenters;
 
+import android.util.Log;
+
 import com.jilk.ros.ROSClient;
 
 import xyz.jimbray.rosbridge.contracts.MainContract;
@@ -12,6 +14,8 @@ import xyz.jimbray.rosbridge.models.MainModel;
  */
 
 public class MainPresenter implements MainContract.IMainPresenter {
+
+    private static final String TAG = MainPresenter.class.getSimpleName();
 
     private MainContract.IMainView mView;
     private MainModel mModel;
@@ -53,6 +57,7 @@ public class MainPresenter implements MainContract.IMainPresenter {
 
             @Override
             public void onDisconnect(boolean normal, String reason, int code) {
+                Log.d(TAG, "ROS disconect reason -> " + reason);
                 mView.rosDisconnected();
             }
 

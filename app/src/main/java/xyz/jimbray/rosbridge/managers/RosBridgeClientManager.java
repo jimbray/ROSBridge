@@ -187,7 +187,7 @@ public class RosBridgeClientManager {
         }
 
         // 好像没有 直接send稳定，重新进入时无法连接上ROS？
-        //Topic<ChatterData> chatterTopic = new Topic<>("/chatter", ChatterData.class, mRosBridgeClient);
+        //Topic<RosStringData> chatterTopic = new Topic<>("/chatter", RosStringData.class, mRosBridgeClient);
         //chatterTopic.subscribe();
 
     }

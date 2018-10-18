@@ -9,9 +9,9 @@ import com.jilk.ros.message.MessageType;
  */
 
 @MessageType(string = "std_msgs/String")
-public class ChatterData extends Message {
+public class RosStringData extends Message {
 
-    public ChatterData(String data) {
+    public RosStringData(String data) {
         this.data = data;
     }
 

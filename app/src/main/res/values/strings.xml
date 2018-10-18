@@ -2,4 +2,17 @@
     <string name="app_name">RosBridge</string>
 
     <string name="connecting">Connecting...</string>
+
+    <string name="connect_info_invalid">连接信息不合法</string>
+
+
+    <string name="publish">Publish</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="unsubscribe">Ubsubscribe</string>
+
+    <string name="left">左</string>
+    <string name="forward">前</string>
+    <string name="right">右</string>
+    <string name="backward">后</string>
+
 </resources>

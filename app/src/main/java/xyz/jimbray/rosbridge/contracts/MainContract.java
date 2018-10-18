@@ -1,5 +1,8 @@
 package xyz.jimbray.rosbridge.contracts;
 
+import com.jilk.ros.ROSClient;
+
+import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
 import xyz.jimbray.rosbridge.presenters.BasePresenter;
 import xyz.jimbray.rosbridge.views.BaseView;
 
@@ -32,6 +35,20 @@ public interface MainContract {
         void subscribeTopic(String topicName);
 
         void unSubscribeTopic(String topicName);
+
+    }
+
+    interface IRosOperationModel {
+
+        void connect2ROS(String url, int port, ROSClient.ConnectionStatusListener listener);
+
+        void autoConnect2ROS(ROSClient.ConnectionStatusListener listener);
+
+        <T> void publishTopic(String topicName, T msg);
+
+        void subscribeTopic(String topicName, RosBridgeClientManager.OnRosMessageListener listener);
+
+        void unSubscribeTopic(String topicName, RosBridgeClientManager.OnRosMessageListener listener);
 
     }
 

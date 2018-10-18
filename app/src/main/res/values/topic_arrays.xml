@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="topic_list">
+        <item>/vrep_cps</item>
+        <item>/turtle1/cmd_vel</item>
+    </string-array>
+
+</resources>

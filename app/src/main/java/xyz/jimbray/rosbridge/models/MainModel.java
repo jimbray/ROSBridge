@@ -2,8 +2,7 @@ package xyz.jimbray.rosbridge.models;
 
 import com.jilk.ros.ROSClient;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
+import xyz.jimbray.rosbridge.contracts.MainContract;
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
 
 /**
@@ -11,7 +10,7 @@ import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
  * Email: jimbray16@gmail.com
  */
 
-public class MainModel implements RosOperationModel {
+public class MainModel implements MainContract.IRosOperationModel {
 
     private RosBridgeClientManager mRoslientManager;
 
@@ -50,7 +49,7 @@ public class MainModel implements RosOperationModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mRoslientManager.connect("172.16.95.101", new ROSClient.ConnectionStatusListener() {
+                mRoslientManager.connect("172.20.10.2", new ROSClient.ConnectionStatusListener() {
                     @Override
                     public void onConnect() {
                         listener.onConnect();
