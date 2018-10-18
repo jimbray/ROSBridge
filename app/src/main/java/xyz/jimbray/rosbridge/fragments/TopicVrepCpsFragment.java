@@ -54,7 +54,6 @@ public class TopicVrepCpsFragment extends RosPannelTopticBaseFragment implements
         switch (view.getId()) {
             case R.id.btn_publish:
                 mPresenter.publishTopic(ITopicNames.VREP_CPS, new RosStringData(ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_START));
-                ((RosPannelFragment)getParentFragment()).onPublishMessage("publish message -> " + ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_START);
                 break;
 
             case R.id.btn_subscribe:

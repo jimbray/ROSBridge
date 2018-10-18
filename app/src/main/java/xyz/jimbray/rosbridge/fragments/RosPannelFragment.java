@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.adapters.RosMessageListAdapter;
 import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.data.RosReceivedMessage;
+import xyz.jimbray.rosbridge.messages.ITopicNames;
+import xyz.jimbray.rosbridge.messages.ITopicVrepCPSMessage;
 import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.presenters.RosPannelPresenter;
 
@@ -61,8 +64,8 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         super.onCreate(savedInstanceState);
 
         // 需要与topic name list 对应
-        mTopicFragmentList.add(TopicVrepCpsFragment.newInstance());
         mTopicFragmentList.add(TopicTurtleCmdFragment.newInstance());
+        mTopicFragmentList.add(TopicVrepCpsFragment.newInstance());
 
         new RosPannelPresenter(this);
 
@@ -121,20 +124,67 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
                     RosStringData data = mGson.fromJson(message, RosStringData.class);
 
                     String date = mDateFormat.format(new Date());
-                    RosReceivedMessage messageData = new RosReceivedMessage(data.data, date);
+                    String chineseStr = getChineseMessage(data.data);
 
-                    mMessageAdapter.addItem(messageData);
-                    recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+                    if (!TextUtils.isEmpty(chineseStr)) {
+                        RosReceivedMessage messageData = new RosReceivedMessage(chineseStr, date);
+
+                        mMessageAdapter.addItem(messageData);
+                        recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+                    }
+
                 }
 
             }
         });
     }
 
+    private String getChineseMessage(String ros_message) {
+        String result = null;
+        switch (ros_message) {
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_STARTED:
+                result = "上下料机器人开始抓取石材";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOADED:
+                result = "上下料机器人抓取石材完毕";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_CARRY_COM_START:
+                result = "上下料机器人运输石材中";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_CARRY_COMED:
+                result = "抓取石材到指定位置";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER1:
+                result = "安装机器人抓取石材完毕";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER2:
+                result = "安装机器人抓取石材完毕";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_LEAVE:
+                result = "上下料机器人离开，安装机器人开始安装";
+                break;
+
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_PLANE_INSTALLED:
+                result = "石材安装完毕";
+                break;
+
+        }
+        return result;
+    }
+
     @Override
     public void setPresenter(RosPannelContract.IRosPannalPresenter presenter) {
         this.mPresenter = presenter;
 
+
+//        Log.d("sss", "一次一次");
+//        mPresenter.subscribeTopic(ITopicNames.VREP_CPS);
         for (int i = 0 ; i < mTopicFragmentList.size(); i++) {
             mTopicFragmentList.get(i).setOeration(presenter);
         }
@@ -147,4 +197,5 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         mMessageAdapter.addItem(messageData);
         recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
     }
+
 }

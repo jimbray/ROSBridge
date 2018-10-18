@@ -2,8 +2,8 @@
 <resources>
 
     <string-array name="topic_list">
-        <item>/vrep_cps</item>
         <item>/turtle1/cmd_vel</item>
+        <item>/vrep_cps</item>
     </string-array>
 
 </resources>

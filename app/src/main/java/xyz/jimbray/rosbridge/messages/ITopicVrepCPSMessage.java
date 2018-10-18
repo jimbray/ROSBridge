@@ -5,13 +5,15 @@ public interface ITopicVrepCPSMessage {
 
     String MESSAGE_ROBOT_LOAD_START = "robot_load_start"; // 上下料机器人开始抓取石材
 
+    String MESSAGE_ROBOT_LOAD_STARTED = "robot_load_started"; // 上下料机器人开始抓取石材
+
     String MESSAGE_ROBOT_LOADED = "robot_loaded"; // 上下料机器人抓取石材完毕
 
     String MESSAGE_ROBOT_CARRY_COM_START = "robot_carry_come_start"; // 上下料机器人运输石材中
 
-    String MESSAGE_ROBOT_CARRY_COMED = "robot_carry_comed"; // 抓取石材到指定位置
+    String MESSAGE_ROBOT_CARRY_COMED = "robot_carry_comed"; // 上下料机器人运石材到指定点
 
-    String MESSAGE_ROBOT_LOAD_PLANE_HANDOVER1 = "robot_load_plane_handover1"; // 安装机器人抓取石材完毕
+    String MESSAGE_ROBOT_LOAD_PLANE_HANDOVER1 = "robot_load_plane_handover1"; // 抓取石材到指定位置
 
     String MESSAGE_ROBOT_LOAD_PLANE_HANDOVER2 = "robot_load_plane_handover2"; // 安装机器人抓取石材完毕
 
