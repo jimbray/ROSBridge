@@ -50,6 +50,8 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     private List<RosPannelTopticBaseFragment> mTopicFragmentList = new ArrayList<>();
 
 
+    private RosPannelTopticBaseFragment mCurFragment = null;
+
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("hh:mm:ss");
 
     public static Fragment newInstanece() {
@@ -66,6 +68,8 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         // 需要与topic name list 对应
         mTopicFragmentList.add(TopicTurtleCmdFragment.newInstance());
         mTopicFragmentList.add(TopicVrepCpsFragment.newInstance());
+        mTopicFragmentList.add(TopicChatterFragment.newInstance());
+        mTopicFragmentList.add(TopicImageDecodeFragment.newInstance());
 
         new RosPannelPresenter(this);
 
@@ -111,7 +115,8 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     }
 
     private void loadTopicFragment(int position) {
-        getChildFragmentManager().beginTransaction().replace(R.id.layout_operation_pannel, mTopicFragmentList.get(position)).commitNow();
+        mCurFragment = mTopicFragmentList.get(position);
+        getChildFragmentManager().beginTransaction().replace(R.id.layout_operation_pannel, mCurFragment).commitNow();
     }
 
     @Override
@@ -131,6 +136,12 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
 
                         mMessageAdapter.addItem(messageData);
                         recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+
+
+                        Log.d("RosPannelFragment", chineseStr);
+                        if (mCurFragment instanceof TopicImageDecodeFragment) {
+                            ((TopicImageDecodeFragment)mCurFragment).setImage(chineseStr);
+                        }
                     }
 
                 }
@@ -140,7 +151,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     }
 
     private String getChineseMessage(String ros_message) {
-        String result = null;
+        String result = ros_message;
         switch (ros_message) {
             case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_STARTED:
                 result = "上下料机器人开始抓取石材";

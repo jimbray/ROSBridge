@@ -8,17 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.messages.ITopicNames;
 import xyz.jimbray.rosbridge.messages.ITopicVrepCPSMessage;
 import xyz.jimbray.rosbridge.messages.RosStringData;
 
-public class TopicVrepCpsFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
+/**
+ * Created by jimbray on 2018/10/29.
+ * Email: jimbray16@gmail.com
+ */
+
+public class TopicChatterFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
 
     private Button btn_publish, btn_subscribe, btn_unsubscribe;
 
     public static RosPannelTopticBaseFragment newInstance() {
-        RosPannelTopticBaseFragment fg = new TopicVrepCpsFragment();
+        RosPannelTopticBaseFragment fg = new TopicChatterFragment();
         fg.setHasOptionsMenu(true);
 
         return fg;
@@ -33,7 +39,9 @@ public class TopicVrepCpsFragment extends RosPannelTopticBaseFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_base_operation, container, false);
+
         initViews(view);
+
         return view;
     }
 
@@ -52,15 +60,15 @@ public class TopicVrepCpsFragment extends RosPannelTopticBaseFragment implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_publish:
-                mPresenter.publishTopic(ITopicNames.VREP_CPS, new RosStringData(ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_START));
+                mPresenter.publishTopic(ITopicNames.CHATTER, new RosStringData("message from android"));
                 break;
 
             case R.id.btn_subscribe:
-                mPresenter.subscribeTopic(ITopicNames.VREP_CPS);
+                mPresenter.subscribeTopic(ITopicNames.CHATTER);
                 break;
 
             case R.id.btn_unsubscribe:
-                mPresenter.unSubscribeTopic(ITopicNames.VREP_CPS);
+                mPresenter.unSubscribeTopic(ITopicNames.CHATTER);
                 break;
         }
     }

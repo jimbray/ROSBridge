@@ -4,6 +4,8 @@
     <string-array name="topic_list">
         <item>/turtle1/cmd_vel</item>
         <item>/vrep_cps</item>
+        <item>/chatter</item>
+        <item>/image/base64_str</item>
     </string-array>
 
 </resources>

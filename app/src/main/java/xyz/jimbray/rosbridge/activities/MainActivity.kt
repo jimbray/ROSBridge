@@ -23,7 +23,7 @@ class MainActivity : BaseActivity() {
 
 
     fun switchFragment(fg : Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.layout_content, RosPannelFragment.newInstanece()).commitNow()
+        supportFragmentManager.beginTransaction().replace(R.id.layout_content, fg).commitNow()
     }
 
 }
