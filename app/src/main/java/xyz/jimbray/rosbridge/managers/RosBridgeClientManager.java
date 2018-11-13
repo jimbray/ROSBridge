@@ -9,15 +9,23 @@ import com.google.gson.Gson;
 import com.jilk.ros.Service;
 import com.jilk.ros.Topic;
 import com.jilk.ros.message.Empty;
-import com.jilk.ros.message.Message;
 import com.jilk.ros.rosapi.message.GetTime;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
 
 import de.greenrobot.event.EventBus;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import xyz.jimbray.rosbridge.App;
 import xyz.jimbray.rosbridge.messages.AddTwoInstRequest;
 import xyz.jimbray.rosbridge.messages.AddTwoIntsResponse;
 import xyz.jimbray.rosbridge.messages.AndroidChatter;
+import xyz.jimbray.rosbridge.messages.ITopicNames;
+import xyz.jimbray.rosbridge.messages.RosImageData;
+import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.ros_common.AdvertiseTopicObject;
 import xyz.jimbray.rosbridge.ros_common.PublishTopicObject;
 import xyz.jimbray.rosbridge.ros_common.SubscribeTopicObject;
@@ -302,18 +310,37 @@ public class RosBridgeClientManager {
 
     //Receive data from ROS server, send from ROSBridgeWebSocketClient onMessage()
     // using eventbus ?!
-    public void onEvent(PublishEvent event) {
+    public void onEvent(final PublishEvent event) {
         Log.d(TAG, "receive rosdata -> " + event.msg);
 
         if (mROSListenerList != null) {
             for (int index = 0 ; index < mROSListenerList.size(); index++) {
-                mROSListenerList.get(index).onMessageReceive(event.msg);
+                final int curIndex = index;
+                if (event.name.equals(ITopicNames.CAMERA_IMAGE_TEST)) {
+                    Observable.create(new ObservableOnSubscribe<RosImageData>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
+
+                        }
+                    }).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<RosImageData>() {
+                                @Override
+                                public void accept(RosImageData imageData) throws Exception {
+                                    mROSListenerList.get(curIndex).onImageMessageReceive(imageData);
+                                }
+                            });
+
+                } else {
+                    mROSListenerList.get(index).onStringMessageReceive(new RosStringData(event.msg));
+                }
             }
         }
     }
 
     public interface OnRosMessageListener {
-        public void onMessageReceive(String data_str);
+        void onStringMessageReceive(RosStringData stringData);
+        void onImageMessageReceive(RosImageData imageData);
     }
 
 }

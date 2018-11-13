@@ -95,12 +95,12 @@ class MainActivityOld : BaseActivity(), MainContract.IMainView {
 
     }
 
-    override fun chatterTopicMessageReceived(data_str: String?) {
+    override fun topicStringMessageReceived(data: RosStringData?) {
         runOnUiThread {
-            if (!TextUtils.isEmpty(data_str)) {
+            if (data != null) {
                 //val chatterData = RosStringData(data_str)
-                val chatterData = mGson.fromJson(data_str, RosStringData::class.java)
-                Log.d(TAG, chatterData.data)
+                //val chatterData = mGson.fromJson(data_str, RosStringData::class.java)
+                Log.d(TAG, data.data)
             }
         }
 

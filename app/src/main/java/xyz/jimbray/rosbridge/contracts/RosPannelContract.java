@@ -1,6 +1,7 @@
 package xyz.jimbray.rosbridge.contracts;
 
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
+import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.models.BaseModel;
 import xyz.jimbray.rosbridge.presenters.BasePresenter;
 import xyz.jimbray.rosbridge.views.BaseView;
@@ -19,7 +20,7 @@ public interface RosPannelContract {
     }
 
     interface IRosPannelView extends BaseView<IRosPannalPresenter> {
-        void onRosStringMessageReceived(String message);
+        void onRosStringMessageReceived(RosStringData message);
     }
 
     interface IRosPannelModel {

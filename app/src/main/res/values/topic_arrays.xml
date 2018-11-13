@@ -6,6 +6,7 @@
         <item>/vrep_cps</item>
         <item>/chatter</item>
         <item>/image/base64_str</item>
+        <item>/camera/image_test</item>
     </string-array>
 
 </resources>

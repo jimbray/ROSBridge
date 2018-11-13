@@ -2,6 +2,8 @@ package xyz.jimbray.rosbridge.presenters;
 
 import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
+import xyz.jimbray.rosbridge.messages.RosImageData;
+import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.models.RosPannelModel;
 
 public class RosPannelPresenter implements RosPannelContract.IRosPannalPresenter {
@@ -34,8 +36,13 @@ public class RosPannelPresenter implements RosPannelContract.IRosPannalPresenter
 
     private RosBridgeClientManager.OnRosMessageListener rosMessageListener = new RosBridgeClientManager.OnRosMessageListener() {
         @Override
-        public void onMessageReceive(String message) {
-            mView.onRosStringMessageReceived(message);
+        public void onStringMessageReceive(RosStringData stringData) {
+            mView.onRosStringMessageReceived(stringData);
+        }
+
+        @Override
+        public void onImageMessageReceive(RosImageData imageData) {
+
         }
     };
 }

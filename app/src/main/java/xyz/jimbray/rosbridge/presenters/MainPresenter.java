@@ -6,6 +6,8 @@ import com.jilk.ros.ROSClient;
 
 import xyz.jimbray.rosbridge.contracts.MainContract;
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
+import xyz.jimbray.rosbridge.messages.RosImageData;
+import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.models.MainModel;
 
 /**
@@ -85,8 +87,13 @@ public class MainPresenter implements MainContract.IMainPresenter {
 
     private RosBridgeClientManager.OnRosMessageListener rosMessageListener = new RosBridgeClientManager.OnRosMessageListener() {
         @Override
-        public void onMessageReceive(String data_str) {
-            mView.chatterTopicMessageReceived(data_str);
+        public void onStringMessageReceive(RosStringData stringData) {
+            mView.topicStringMessageReceived(stringData);
+        }
+
+        @Override
+        public void onImageMessageReceive(RosImageData imageData) {
+
         }
     };
 

@@ -21,12 +21,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import xyz.jimbray.rosbridge.BaseFragment;
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.adapters.RosMessageListAdapter;
 import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.data.RosReceivedMessage;
-import xyz.jimbray.rosbridge.messages.ITopicNames;
 import xyz.jimbray.rosbridge.messages.ITopicVrepCPSMessage;
 import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.presenters.RosPannelPresenter;
@@ -69,7 +73,8 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         mTopicFragmentList.add(TopicTurtleCmdFragment.newInstance());
         mTopicFragmentList.add(TopicVrepCpsFragment.newInstance());
         mTopicFragmentList.add(TopicChatterFragment.newInstance());
-        mTopicFragmentList.add(TopicImageDecodeFragment.newInstance());
+        mTopicFragmentList.add(TopicBase64ImageDecodeFragment.newInstance());
+        mTopicFragmentList.add(TopicRosImageDecodeFragment.newInstance());
 
         new RosPannelPresenter(this);
 
@@ -120,34 +125,61 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     }
 
     @Override
-    public void onRosStringMessageReceived(final String message) {
-        getActivity().runOnUiThread(new Runnable() {
+    public void onRosStringMessageReceived(RosStringData rosStringData) {
+
+
+        String message = rosStringData.data;
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        String date = mDateFormat.format(new Date());
+        String chineseStr = getChineseMessage(rosStringData.data);
+
+        if (!TextUtils.isEmpty(chineseStr)) {
+            RosReceivedMessage messageData = new RosReceivedMessage(chineseStr, date);
+
+            mMessageAdapter.addItem(messageData);
+            recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+
+
+            Log.d("RosPannelFragment", chineseStr);
+            if (mCurFragment instanceof TopicBase64ImageDecodeFragment) {
+                ((TopicBase64ImageDecodeFragment)mCurFragment).setImage(chineseStr);
+            }
+        }
+
+        /*
+        io.reactivex.Observable.create(new ObservableOnSubscribe<RosStringData>() {
             @Override
-            public void run() {
-                if (!TextUtils.isEmpty(message)) {
+            public void subscribe(ObservableEmitter<RosStringData> emitter) throws Exception {
+                RosStringData data = mGson.fromJson(message, RosStringData.class);
+                emitter.onNext(data);
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<RosStringData>() {
+                    @Override
+                    public void accept(RosStringData rosStringData) throws Exception {
+                        String date = mDateFormat.format(new Date());
+                        String chineseStr = getChineseMessage(rosStringData.data);
 
-                    RosStringData data = mGson.fromJson(message, RosStringData.class);
+                        if (!TextUtils.isEmpty(chineseStr)) {
+                            RosReceivedMessage messageData = new RosReceivedMessage(chineseStr, date);
 
-                    String date = mDateFormat.format(new Date());
-                    String chineseStr = getChineseMessage(data.data);
-
-                    if (!TextUtils.isEmpty(chineseStr)) {
-                        RosReceivedMessage messageData = new RosReceivedMessage(chineseStr, date);
-
-                        mMessageAdapter.addItem(messageData);
-                        recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
+                            mMessageAdapter.addItem(messageData);
+                            recyclerview_message.scrollToPosition(mMessageAdapter.getItemCount() - 1);
 
 
-                        Log.d("RosPannelFragment", chineseStr);
-                        if (mCurFragment instanceof TopicImageDecodeFragment) {
-                            ((TopicImageDecodeFragment)mCurFragment).setImage(chineseStr);
+                            Log.d("RosPannelFragment", chineseStr);
+                            if (mCurFragment instanceof TopicBase64ImageDecodeFragment) {
+                                ((TopicBase64ImageDecodeFragment)mCurFragment).setImage(chineseStr);
+                            }
                         }
                     }
+                });
+                */
 
-                }
-
-            }
-        });
     }
 
     private String getChineseMessage(String ros_message) {

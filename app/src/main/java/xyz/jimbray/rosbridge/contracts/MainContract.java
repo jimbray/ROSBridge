@@ -3,6 +3,7 @@ package xyz.jimbray.rosbridge.contracts;
 import com.jilk.ros.ROSClient;
 
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager;
+import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.presenters.BasePresenter;
 import xyz.jimbray.rosbridge.views.BaseView;
 
@@ -21,7 +22,7 @@ public interface MainContract {
 
         void rosConnectError(Exception ex);
 
-        void chatterTopicMessageReceived(String data_str);
+        void topicStringMessageReceived(RosStringData data);
     }
 
     interface IMainPresenter extends BasePresenter {

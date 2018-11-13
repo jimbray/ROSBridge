@@ -10,4 +10,6 @@ public interface ITopicNames {
     String CHATTER = "/chatter";
 
     String IMAGE_BASE64_STR = "/image/base64_str";
+
+    String CAMERA_IMAGE_TEST = "/camera/image_test";
 }
