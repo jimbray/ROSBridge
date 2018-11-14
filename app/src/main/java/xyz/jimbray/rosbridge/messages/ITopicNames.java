@@ -11,5 +11,5 @@ public interface ITopicNames {
 
     String IMAGE_BASE64_STR = "/image/base64_str";
 
-    String CAMERA_IMAGE_TEST = "/camera/image_test";
+    String CAMERA_IMAGE_TEST = "/usb_cam/image_raw/compressed";
 }

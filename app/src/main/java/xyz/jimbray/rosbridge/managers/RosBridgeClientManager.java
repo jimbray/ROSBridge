@@ -12,6 +12,9 @@ import com.jilk.ros.message.Empty;
 import com.jilk.ros.rosapi.message.GetTime;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import de.greenrobot.event.EventBus;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -320,7 +323,12 @@ public class RosBridgeClientManager {
                     Observable.create(new ObservableOnSubscribe<RosImageData>() {
                         @Override
                         public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
-
+                            JSONParser jsonParser = new JSONParser();
+                            JSONObject jsonObject = (JSONObject)jsonParser.parse(event.msg);
+                            String image_data = (String) jsonObject.get("data");
+                            RosImageData imageData = new RosImageData();
+                            imageData.data = image_data.getBytes();
+                            emitter.onNext(imageData);
                         }
                     }).subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())

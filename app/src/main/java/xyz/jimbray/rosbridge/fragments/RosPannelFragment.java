@@ -21,17 +21,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import xyz.jimbray.rosbridge.BaseFragment;
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.adapters.RosMessageListAdapter;
 import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.data.RosReceivedMessage;
 import xyz.jimbray.rosbridge.messages.ITopicVrepCPSMessage;
+import xyz.jimbray.rosbridge.messages.RosImageData;
 import xyz.jimbray.rosbridge.messages.RosStringData;
 import xyz.jimbray.rosbridge.presenters.RosPannelPresenter;
 
@@ -122,6 +118,13 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     private void loadTopicFragment(int position) {
         mCurFragment = mTopicFragmentList.get(position);
         getChildFragmentManager().beginTransaction().replace(R.id.layout_operation_pannel, mCurFragment).commitNow();
+    }
+
+    @Override
+    public void onRosImageMessageeceived(RosImageData imageData) {
+        if (imageData != null) {
+            ((TopicRosImageDecodeFragment)mCurFragment).setImage(imageData.data);
+        }
     }
 
     @Override

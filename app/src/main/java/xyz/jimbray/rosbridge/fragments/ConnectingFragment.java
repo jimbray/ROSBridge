@@ -110,23 +110,29 @@ public class ConnectingFragment extends BaseFragment implements ConnectingContra
     }
 
     private void showROSOperationInfo() {
-        ((MainActivity)getActivity()).switchFragment(RosPannelFragment.newInstanece());
+        if ((MainActivity)getActivity() != null) {
+            ((MainActivity)getActivity()).switchFragment(RosPannelFragment.newInstanece());
+        }
     }
 
 
     @Override
     public void rosConnected() {
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showROSOperationInfo();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showROSOperationInfo();
+                }
+            });
+        }
     }
 
     @Override
     public void rosDisconnected() {
+        if (getActivity() == null) {
+            return ;
+        }
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

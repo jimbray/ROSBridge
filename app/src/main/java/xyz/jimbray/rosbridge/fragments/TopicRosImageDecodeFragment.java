@@ -1,14 +1,24 @@
 package xyz.jimbray.rosbridge.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import java.io.ByteArrayOutputStream;
 
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.messages.ITopicNames;
@@ -29,7 +39,6 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
     private boolean isSurfaceReady = false;
 
     private boolean iscanDraw = false;
-
     public static RosPannelTopticBaseFragment newInstance() {
         RosPannelTopticBaseFragment fg = new TopicRosImageDecodeFragment();
         fg.setHasOptionsMenu(true);
@@ -61,6 +70,8 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
         btn_unsubscribe.setOnClickListener(this);
 
         mSurfaceHolder = sv_data.getHolder();
+        sv_data.setKeepScreenOn(true);
+
         mSurfaceHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -80,6 +91,7 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
                     isSurfaceReady = false;
                     iscanDraw = false;
                     mSurfaceHolder.removeCallback(this);
+
                 }
 
             }
@@ -100,7 +112,7 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
     }
 
 
-    public void setImage(String image_str) {
+    public void setImage(final byte[] image_data) {
 
         /*
         if (TextUtils.isEmpty(image_str)) {
@@ -112,12 +124,14 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
             return ;
         }
 
-        if (iscanDraw) {
-            return;
-        }
+        */
+
+//        if (iscanDraw) {
+//            return;
+//        }
 
 
-        oldBase64Str = image_str;
+        //oldBase64Str = image_str;
         //btn_unsubscribe.performClick();
 
         if (isSurfaceReady) {
@@ -131,9 +145,19 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
                         Log.d("jimjim", "start Drawing...");
                         iscanDraw = false;
 
-                        mPresenter.unSubscribeTopic(ITopicNames.IMAGE_BASE64_STR);
 
-                        Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, null);
+//                        Camera.Size previewSize = camera.getParameters().getPreviewSize();
+                        YuvImage yuvimage=new YuvImage(image_data, ImageFormat.NV21, 640, 480, null);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
+                        byte[] jdata = baos.toByteArray();
+
+                        //将rawImage转换成bitmap
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, options);
+
+//                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, null);
                         Canvas canvas = mSurfaceHolder.lockCanvas();
                         try {
                             if (canvas != null) {
@@ -143,10 +167,11 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
                         } finally {
                             mSurfaceHolder.unlockCanvasAndPost(canvas);
-                            bmp.recycle();
+                            if (bmp != null) {
+                                bmp.recycle();
+                            }
                             iscanDraw = true;
 
-                            mPresenter.subscribeTopic(ITopicNames.IMAGE_BASE64_STR);
                             Log.d("jimjim", "finished Drawing...");
                         }
                     }
@@ -156,7 +181,6 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
 
         }
-        */
 
 
 
