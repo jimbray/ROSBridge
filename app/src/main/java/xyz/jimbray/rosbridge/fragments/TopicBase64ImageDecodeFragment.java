@@ -113,7 +113,7 @@ public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment 
     }
 
 
-    public void setImage(String image_str) {
+    public void setImage(final String image_str) {
         if (TextUtils.isEmpty(image_str)) {
             return;
         }
@@ -146,12 +146,14 @@ public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment 
 
                         //mPresenter.unSubscribeTopic(ITopicNames.IMAGE_BASE64_STR);
 
-                        YuvImage yuvimage=new YuvImage(image_byte_array, ImageFormat.NV21, 640, 480, null);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
-                        byte[] jdata = baos.toByteArray();
+                        // YuvImage yuvimage=new YuvImage(image_byte_array, ImageFormat.NV21, 640, 480, null);
+                        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        // yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
+                        // byte[] jdata = baos.toByteArray();
 
-                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, null);
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, options);
                         Canvas canvas = mSurfaceHolder.lockCanvas();
 
                         Log.e("jim", "bmp is null !!!");

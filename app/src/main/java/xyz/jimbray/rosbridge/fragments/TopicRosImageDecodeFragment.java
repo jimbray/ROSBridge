@@ -3,6 +3,7 @@ package xyz.jimbray.rosbridge.fragments;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -10,6 +11,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Preconditions;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -18,10 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.jboss.netty.buffer.ChannelBuffer;
+
 import java.io.ByteArrayOutputStream;
 
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.messages.ITopicNames;
+import xyz.jimbray.rosbridge.messages.RosImageData;
 
 /**
  * Created by jimbray on 2018/10/31.
@@ -112,7 +117,7 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
     }
 
 
-    public void setImage(final byte[] image_data) {
+    public void setImage(final RosImageData imageData) {
 
         /*
         if (TextUtils.isEmpty(image_str)) {
@@ -142,20 +147,21 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
                     synchronized (mSurfaceHolder) {
 
+                        /*
                         Log.d("jimjim", "start Drawing...");
                         iscanDraw = false;
 
 
 //                        Camera.Size previewSize = camera.getParameters().getPreviewSize();
-                        YuvImage yuvimage=new YuvImage(image_data, ImageFormat.NV21, 640, 480, null);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
-                        byte[] jdata = baos.toByteArray();
+                        // YuvImage yuvimage=new YuvImage(image_data, ImageFormat.NV21, 640, 480, null);
+                        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        // yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
+                        // byte[] jdata = baos.toByteArray();
 
                         //将rawImage转换成bitmap
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, options);
+                        // BitmapFactory.Options options = new BitmapFactory.Options();
+                        // options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(image_data, 0, image_data.length, null);
 
 //                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, null);
                         Canvas canvas = mSurfaceHolder.lockCanvas();
@@ -174,6 +180,42 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
                             Log.d("jimjim", "finished Drawing...");
                         }
+
+                    */
+
+
+
+                        //Preconditions.checkArgument(imageData.encoding.equals("rgb8"));
+                        Bitmap bitmap = Bitmap.createBitmap((int)imageData.width, (int)imageData.height, Bitmap.Config.ARGB_8888);
+
+                        for(int x = 0; x < imageData.width; ++x) {
+                            for(int y = 0; y < imageData.height; ++y) {
+                                ChannelBuffer data = imageData.data;
+                                byte red = data.getByte(y * (int)imageData.step + 3 * x);
+                                byte green = data.getByte(y * (int)imageData.step + 3 * x + 1);
+                                byte blue = data.getByte(y * (int)imageData.step + 3 * x + 2);
+                                bitmap.setPixel(x, y, Color.argb(255, red & 255, green & 255, blue & 255));
+                            }
+                        }
+
+                        Canvas canvas = mSurfaceHolder.lockCanvas();
+                        try {
+                            if (canvas != null) {
+                                canvas.drawBitmap(bitmap, 0, 0, null);
+                            }
+                        } catch (Exception e) {
+
+                        } finally {
+                            mSurfaceHolder.unlockCanvasAndPost(canvas);
+                            if (bitmap != null) {
+                                bitmap.recycle();
+                            }
+                            iscanDraw = true;
+
+                            Log.d("jimjim", "finished Drawing...");
+                        }
+
+
                     }
 
                 }

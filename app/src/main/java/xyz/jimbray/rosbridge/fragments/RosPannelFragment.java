@@ -124,7 +124,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     @Override
     public void onRosImageMessageeceived(RosImageData imageData) {
         if (imageData != null) {
-            ((TopicRosImageDecodeFragment)mCurFragment).setImage(imageData.data);
+            ((TopicRosImageDecodeFragment)mCurFragment).setImage(imageData);
         }
     }
 

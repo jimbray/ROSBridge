@@ -19,6 +19,8 @@
  */
 package com.jilk.ros.rosbridge.implementation;
 
+import android.util.Log;
+
 import com.jilk.ros.PublishEvent;
 import com.jilk.ros.ROSClient;
 import com.jilk.ros.message.Message;
@@ -82,11 +84,14 @@ public class ROSBridgeWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         if (debug) System.out.println("<ROS " + message);
+        Log.d("roswebsocket", "rceive message before -> " + message);
+
         //System.out.println("ROSBridgeWebSocketClient.onMessage (message): " + message);
         Operation operation = Operation.toOperation(message, classes);
         //System.out.println("ROSBridgeWebSocketClient.onMessage (operation): ");
         //operation.print();
-        
+
+        Log.d("roswebsocket", "rceive message after -> " + message);
         FullMessageHandler handler = null;
         Message msg = null;
         if (operation instanceof Publish) {

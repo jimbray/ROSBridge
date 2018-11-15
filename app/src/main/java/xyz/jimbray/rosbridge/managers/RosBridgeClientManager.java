@@ -9,9 +9,12 @@ import com.google.gson.Gson;
 import com.jilk.ros.Service;
 import com.jilk.ros.Topic;
 import com.jilk.ros.message.Empty;
+import com.jilk.ros.message.Header;
 import com.jilk.ros.rosapi.message.GetTime;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
 
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -325,9 +328,23 @@ public class RosBridgeClientManager {
                         public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
                             JSONParser jsonParser = new JSONParser();
                             JSONObject jsonObject = (JSONObject)jsonParser.parse(event.msg);
-                            String image_data = (String) jsonObject.get("data");
+                            //String image_data = (String) jsonObject.get("data");
                             RosImageData imageData = new RosImageData();
-                            imageData.data = image_data.getBytes();
+                            imageData.encoding = (String) jsonObject.get("encoding");
+                            imageData.width =  Long.parseLong(jsonObject.get("width").toString());
+                            imageData.height = Long.parseLong(jsonObject.get("height").toString());
+                            imageData.is_bigendian = Long.parseLong(jsonObject.get("is_bigendian").toString());
+                            imageData.step = Long.parseLong(jsonObject.get("step").toString());
+
+                            imageData.data = ChannelBuffers.wrappedBuffer(((String) jsonObject.get("data")).getBytes());
+                            /*
+                            String header_src = (String)jsonObject.get("header");
+                            JSONObject headerJsonObject = (JSONObject)jsonParser.parse(header_src);
+                            Header header = new Header();
+                            header.frame_id =
+                             */
+
+                            //imageData.data = image_data.getBytes();
                             emitter.onNext(imageData);
                         }
                     }).subscribeOn(Schedulers.io())
@@ -340,7 +357,25 @@ public class RosBridgeClientManager {
                             });
 
                 } else {
-                    mROSListenerList.get(index).onStringMessageReceive(new RosStringData(event.msg));
+                    Observable.create(new ObservableOnSubscribe<RosStringData>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<RosStringData> emitter) throws Exception {
+                            JSONParser jsonParser = new JSONParser();
+                            JSONObject jsonObject = (JSONObject)jsonParser.parse(event.msg);
+                            String string_data = (String) jsonObject.get("data");
+                            RosStringData stringData = new RosStringData(string_data);
+                            emitter.onNext(stringData);
+                        }
+                    }).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<RosStringData>() {
+                                @Override
+                                public void accept(RosStringData stringData) throws Exception {
+                                    mROSListenerList.get(curIndex).onStringMessageReceive(stringData);
+                                }
+                            });
+
+
                 }
             }
         }
