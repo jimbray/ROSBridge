@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,13 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
 
@@ -29,9 +37,9 @@ import xyz.jimbray.rosbridge.messages.ITopicNames;
  * Email: jimbray16@gmail.com
  */
 
-public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
+public class TopicBase64ImageGlideFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
 
-    //private ImageView iv_data;
+    private ImageView iv_data;
     private SurfaceView sv_data;
     private SurfaceHolder mSurfaceHolder;
 
@@ -44,7 +52,7 @@ public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment 
     private boolean iscanDraw = false;
 
     public static RosPannelTopticBaseFragment newInstance() {
-        RosPannelTopticBaseFragment fg = new TopicBase64ImageDecodeFragment();
+        RosPannelTopticBaseFragment fg = new TopicBase64ImageGlideFragment();
         fg.setHasOptionsMenu(true);
 
         return fg;
@@ -58,45 +66,20 @@ public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_fg_image_decode, container, false);
+        View view = inflater.inflate(R.layout.layout_fg_image_glide, container, false);
         initViews(view);
         return view;
     }
 
     @Override
     protected void initViews(View view) {
-        //iv_data = view.findViewById(R.id.iv_data);
-        sv_data = view.findViewById(R.id.sv_data);
+        iv_data = view.findViewById(R.id.iv_data);
         btn_subscribe = view.findViewById(R.id.btn_subscribe);
         btn_unsubscribe = view.findViewById(R.id.btn_unsubscribe);
 
         btn_subscribe.setOnClickListener(this);
         btn_unsubscribe.setOnClickListener(this);
 
-        mSurfaceHolder = sv_data.getHolder();
-        mSurfaceHolder.addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-
-                isSurfaceReady = true;
-
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                synchronized (this) {
-                    isSurfaceReady = false;
-                    iscanDraw = false;
-                    mSurfaceHolder.removeCallback(this);
-                }
-
-            }
-        });
     }
 
     @Override
@@ -117,74 +100,19 @@ public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment 
         if (TextUtils.isEmpty(image_str)) {
             return;
         }
-        final byte[] image_byte_array = Base64.decode(image_str, Base64.DEFAULT | Base64.NO_WRAP);
+        byte[] image_byte_array = Base64.decode(image_str, Base64.NO_WRAP);
 
-
-
-        //if (image_str.equals(oldBase64Str)) {
-        //    return ;
-        //}
-
-        // if (iscanDraw) {
-        //    return;
-        // }
+        if (image_str.equals(oldBase64Str)) {
+            return ;
+        }
 
 
         oldBase64Str = image_str;
-        //btn_unsubscribe.performClick();
-
-        if (isSurfaceReady) {
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    synchronized (mSurfaceHolder) {
-
-                        Log.d("jimjim", "start Drawing...");
-                        iscanDraw = false;
-
-                        //mPresenter.unSubscribeTopic(ITopicNames.IMAGE_BASE64_STR);
-
-                        YuvImage yuvimage=new YuvImage(image_byte_array, ImageFormat.NV21, 640, 480, null);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
-                        byte[] jdata = baos.toByteArray();
-
-                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, null);
-                        Canvas canvas = mSurfaceHolder.lockCanvas();
-
-                        Log.e("jim", "bmp is null !!!");
-                        try {
-                            if (canvas != null) {
-                                canvas.drawBitmap(bmp, 0, 0, null);
-                            }
-                        } catch (Exception e) {
-
-                        } finally {
-                            mSurfaceHolder.unlockCanvasAndPost(canvas);
-                            if (bmp != null) {
-                                bmp.recycle();
-                            }
-                            iscanDraw = true;
-
-                            //mPresenter.subscribeTopic(ITopicNames.IMAGE_BASE64_STR);
-                            Log.d("jimjim", "finished Drawing...");
-                        }
-                    }
-
-                }
-            }).start();
-
-
-        }
-
-        /*
-        glide 显示图片
+        btn_unsubscribe.performClick();
         //RequestOptions options = new RequestOptions();
         //options.dontAnimate();
         Glide.with(getActivity())
-          //      .applyDefaultRequestOptions(options)
+                //      .applyDefaultRequestOptions(options)
                 .load(image_byte_array)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -202,7 +130,8 @@ public class TopicBase64ImageDecodeFragment extends RosPannelTopticBaseFragment 
                     }
                 })
                 .into(iv_data);
-                */
+
+
     }
 
 }

@@ -71,6 +71,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         mTopicFragmentList.add(TopicChatterFragment.newInstance());
         mTopicFragmentList.add(TopicBase64ImageDecodeFragment.newInstance());
         mTopicFragmentList.add(TopicRosImageDecodeFragment.newInstance());
+        mTopicFragmentList.add(TopicBase64ImageGlideFragment.newInstance());
 
         new RosPannelPresenter(this);
 
@@ -137,7 +138,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         }
 
         String date = mDateFormat.format(new Date());
-        String chineseStr = getChineseMessage(rosStringData.data);
+        final String chineseStr = getChineseMessage(rosStringData.data);
 
         if (!TextUtils.isEmpty(chineseStr)) {
             RosReceivedMessage messageData = new RosReceivedMessage(chineseStr, date);
@@ -149,6 +150,14 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
             Log.d("RosPannelFragment", chineseStr);
             if (mCurFragment instanceof TopicBase64ImageDecodeFragment) {
                 ((TopicBase64ImageDecodeFragment)mCurFragment).setImage(chineseStr);
+
+            } else if(mCurFragment instanceof TopicBase64ImageGlideFragment) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((TopicBase64ImageGlideFragment)mCurFragment).setImage(chineseStr);
+                    }
+                });
             }
         }
 
