@@ -9,7 +9,8 @@ public interface ITopicNames {
 
     String CHATTER = "/chatter";
 
-    String IMAGE_BASE64_STR = "/image/base64_str";
+    //String IMAGE_BASE64_STR = "/image/base64_str";
+    String IMAGE_BASE64_STR = "/usb_cam/image_raw/compressed";
 
     String CAMERA_IMAGE_TEST = "/camera/image_test";
 }
