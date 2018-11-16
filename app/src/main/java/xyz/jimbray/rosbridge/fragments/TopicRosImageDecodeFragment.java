@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Preconditions;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -119,24 +121,22 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
     public void setImage(final RosImageData imageData) {
 
-        /*
-        if (TextUtils.isEmpty(image_str)) {
+        if (TextUtils.isEmpty(imageData.data)) {
             return;
         }
-        final byte[] image_byte_array = Base64.decode(image_str, Base64.DEFAULT);
-
-        if (image_str.equals(oldBase64Str)) {
-            return ;
-        }
-
-        */
-
-//        if (iscanDraw) {
-//            return;
-//        }
+        final byte[] image_byte_array = Base64.decode(imageData.data, Base64.DEFAULT | Base64.NO_WRAP);
 
 
-        //oldBase64Str = image_str;
+
+        //if (image_str.equals(oldBase64Str)) {
+        //    return ;
+        //}
+
+        // if (iscanDraw) {
+        //    return;
+        // }
+
+
         //btn_unsubscribe.performClick();
 
         if (isSurfaceReady) {
@@ -147,24 +147,25 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
                     synchronized (mSurfaceHolder) {
 
-                        /*
-                        Log.d("jimjim", "start Drawing...");
-                        iscanDraw = false;
+                        /*//Preconditions.checkArgument(imageData.encoding.equals("rgb8"));
+                        Bitmap bitmap = Bitmap.createBitmap((int)imageData.width, (int)imageData.height, Bitmap.Config.ARGB_8888);
 
+                        for(int x = 0; x < imageData.width; ++x) {
+                            for(int y = 0; y < imageData.height; ++y) {
+                                ChannelBuffer data = imageData.data;
+                                byte red = data.getByte(y * (int)imageData.step + 3 * x);
+                                byte green = data.getByte(y * (int)imageData.step + 3 * x + 1);
+                                byte blue = data.getByte(y * (int)imageData.step + 3 * x + 2);
+                                bitmap.setPixel(x, y, Color.argb(255, red & 255, green & 255, blue & 255));
+                            }
+                        }*/
 
-//                        Camera.Size previewSize = camera.getParameters().getPreviewSize();
-                        // YuvImage yuvimage=new YuvImage(image_data, ImageFormat.NV21, 640, 480, null);
-                        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        // yuvimage.compressToJpeg(new Rect(0, 0, 640, 480), 80, baos);  //这里 80 是图片质量，取值范围 0-100，100为品质最高
-                        // byte[] jdata = baos.toByteArray();
-
-                        //将rawImage转换成bitmap
-                        // BitmapFactory.Options options = new BitmapFactory.Options();
-                        // options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        Bitmap bmp = BitmapFactory.decodeByteArray(image_data, 0, image_data.length, null);
-
-//                        Bitmap bmp = BitmapFactory.decodeByteArray(jdata, 0, jdata.length, null);
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, options);
                         Canvas canvas = mSurfaceHolder.lockCanvas();
+
+                        Log.e("jim", "bmp is null !!!");
                         try {
                             if (canvas != null) {
                                 canvas.drawBitmap(bmp, 0, 0, null);
@@ -178,40 +179,7 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
                             }
                             iscanDraw = true;
 
-                            Log.d("jimjim", "finished Drawing...");
-                        }
-
-                    */
-
-
-
-                        //Preconditions.checkArgument(imageData.encoding.equals("rgb8"));
-                        Bitmap bitmap = Bitmap.createBitmap((int)imageData.width, (int)imageData.height, Bitmap.Config.ARGB_8888);
-
-                        for(int x = 0; x < imageData.width; ++x) {
-                            for(int y = 0; y < imageData.height; ++y) {
-                                ChannelBuffer data = imageData.data;
-                                byte red = data.getByte(y * (int)imageData.step + 3 * x);
-                                byte green = data.getByte(y * (int)imageData.step + 3 * x + 1);
-                                byte blue = data.getByte(y * (int)imageData.step + 3 * x + 2);
-                                bitmap.setPixel(x, y, Color.argb(255, red & 255, green & 255, blue & 255));
-                            }
-                        }
-
-                        Canvas canvas = mSurfaceHolder.lockCanvas();
-                        try {
-                            if (canvas != null) {
-                                canvas.drawBitmap(bitmap, 0, 0, null);
-                            }
-                        } catch (Exception e) {
-
-                        } finally {
-                            mSurfaceHolder.unlockCanvasAndPost(canvas);
-                            if (bitmap != null) {
-                                bitmap.recycle();
-                            }
-                            iscanDraw = true;
-
+                            //mPresenter.subscribeTopic(ITopicNames.IMAGE_BASE64_STR);
                             Log.d("jimjim", "finished Drawing...");
                         }
 

@@ -6,8 +6,8 @@
         <item>/vrep_cps</item>
         <item>/chatter</item>
         <item>/image/base64_str</item>
-        <item>/camera/image_test</item>
-        <item>/image/base64_str/glide</item>
+        <item>/usb_cam/image_raw/compressed</item>
+        <!--<item>/image/base64_str/glide</item>-->
     </string-array>
 
 </resources>

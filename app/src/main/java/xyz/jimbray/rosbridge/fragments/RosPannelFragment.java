@@ -71,7 +71,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         mTopicFragmentList.add(TopicChatterFragment.newInstance());
         mTopicFragmentList.add(TopicBase64ImageDecodeFragment.newInstance());
         mTopicFragmentList.add(TopicRosImageDecodeFragment.newInstance());
-        mTopicFragmentList.add(TopicBase64ImageGlideFragment.newInstance());
+//        mTopicFragmentList.add(TopicBase64ImageGlideFragment.newInstance());
 
         new RosPannelPresenter(this);
 

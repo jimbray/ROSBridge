@@ -326,7 +326,7 @@ public class RosBridgeClientManager {
                     Observable.create(new ObservableOnSubscribe<RosImageData>() {
                         @Override
                         public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
-                            JSONParser jsonParser = new JSONParser();
+                            /*JSONParser jsonParser = new JSONParser();
                             JSONObject jsonObject = (JSONObject)jsonParser.parse(event.msg);
                             //String image_data = (String) jsonObject.get("data");
                             RosImageData imageData = new RosImageData();
@@ -337,14 +337,21 @@ public class RosBridgeClientManager {
                             imageData.step = Long.parseLong(jsonObject.get("step").toString());
 
                             imageData.data = ChannelBuffers.wrappedBuffer(((String) jsonObject.get("data")).getBytes());
-                            /*
+                            *//*
                             String header_src = (String)jsonObject.get("header");
                             JSONObject headerJsonObject = (JSONObject)jsonParser.parse(header_src);
                             Header header = new Header();
                             header.frame_id =
-                             */
+                             *//*
 
-                            //imageData.data = image_data.getBytes();
+                            //imageData.data = image_data.getBytes();*/
+
+                            JSONParser jsonParser = new JSONParser();
+                            JSONObject jsonObject = (JSONObject)jsonParser.parse(event.msg);
+                            String image_base64_data = (String) jsonObject.get("data");
+                            RosImageData imageData = new RosImageData();
+                            imageData.data = image_base64_data;
+
                             emitter.onNext(imageData);
                         }
                     }).subscribeOn(Schedulers.io())
@@ -352,7 +359,9 @@ public class RosBridgeClientManager {
                             .subscribe(new Consumer<RosImageData>() {
                                 @Override
                                 public void accept(RosImageData imageData) throws Exception {
-                                    mROSListenerList.get(curIndex).onImageMessageReceive(imageData);
+                                    if (curIndex < mROSListenerList.size() && curIndex >= 0) {
+                                        mROSListenerList.get(curIndex).onImageMessageReceive(imageData);
+                                    }
                                 }
                             });
 
@@ -371,7 +380,9 @@ public class RosBridgeClientManager {
                             .subscribe(new Consumer<RosStringData>() {
                                 @Override
                                 public void accept(RosStringData stringData) throws Exception {
-                                    mROSListenerList.get(curIndex).onStringMessageReceive(stringData);
+                                    if (curIndex < mROSListenerList.size() && curIndex >= 0) {
+                                        mROSListenerList.get(curIndex).onStringMessageReceive(stringData);
+                                    }
                                 }
                             });
 
