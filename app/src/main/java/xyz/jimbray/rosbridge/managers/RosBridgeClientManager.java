@@ -2,21 +2,21 @@ package xyz.jimbray.rosbridge.managers;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.jilk.ros.MessageHandler;
 import com.jilk.ros.PublishEvent;
 import com.jilk.ros.ROSClient;
-import com.google.gson.Gson;
 import com.jilk.ros.Service;
 import com.jilk.ros.Topic;
 import com.jilk.ros.message.Empty;
-import com.jilk.ros.message.Header;
 import com.jilk.ros.rosapi.message.GetTime;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import io.reactivex.Observable;
@@ -36,9 +36,6 @@ import xyz.jimbray.rosbridge.ros_common.AdvertiseTopicObject;
 import xyz.jimbray.rosbridge.ros_common.PublishTopicObject;
 import xyz.jimbray.rosbridge.ros_common.SubscribeTopicObject;
 import xyz.jimbray.rosbridge.ros_common.UnSubscribeTopicObject;
-
-import java.util.ArrayList;
-import java.util.List;
 /**
  * Created by jimbray on 2018/9/18.
  * Email: jimbray16@gmail.com
@@ -75,7 +72,7 @@ public class RosBridgeClientManager {
     }
 
 
-    public void connect(String url, int port, final ROSClient.ConnectionStatusListener listener) {
+    public void connect(final String url, int port, final ROSClient.ConnectionStatusListener listener) {
         if (url != null && url.equals(mCurUrl)) {
             // already connected
         } else {
@@ -85,6 +82,7 @@ public class RosBridgeClientManager {
                 public void onConnect() {
                     // connected successful
                     App.getInstance().setRosBridgeClient(mRosBridgeClient);
+                    mCurUrl = url;
                     if (listener != null) {
                         listener.onConnect();
                     }
@@ -110,7 +108,7 @@ public class RosBridgeClientManager {
         }
     }
 
-    public void connect(String url, final ROSClient.ConnectionStatusListener listener) {
+    public void connect(final String url, final ROSClient.ConnectionStatusListener listener) {
         int port = 9090;
         if (url != null && url.equals(mCurUrl)) {
             // already connected
@@ -121,6 +119,7 @@ public class RosBridgeClientManager {
                 public void onConnect() {
                     // connected successful
                     App.getInstance().setRosBridgeClient(mRosBridgeClient);
+                    mCurUrl = url;
                     if (listener != null) {
                         listener.onConnect();
                     }
@@ -358,7 +357,7 @@ public class RosBridgeClientManager {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Consumer<RosImageData>() {
                                 @Override
-                                public void accept(RosImageData imageData) throws Exception {
+                                public void accept(RosImageData imageData) {
                                     if (curIndex < mROSListenerList.size() && curIndex >= 0) {
                                         mROSListenerList.get(curIndex).onImageMessageReceive(imageData);
                                     }
@@ -379,7 +378,7 @@ public class RosBridgeClientManager {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Consumer<RosStringData>() {
                                 @Override
-                                public void accept(RosStringData stringData) throws Exception {
+                                public void accept(RosStringData stringData) {
                                     if (curIndex < mROSListenerList.size() && curIndex >= 0) {
                                         mROSListenerList.get(curIndex).onStringMessageReceive(stringData);
                                     }

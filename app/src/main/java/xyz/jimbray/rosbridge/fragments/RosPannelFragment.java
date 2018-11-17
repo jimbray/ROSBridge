@@ -214,7 +214,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
                 break;
 
             case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER1:
-                result = "安装机器人抓取石材完毕";
+                result = "抓取石材到指定位置";
                 break;
 
             case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER2:
