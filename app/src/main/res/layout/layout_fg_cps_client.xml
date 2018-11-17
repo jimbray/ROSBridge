@@ -8,30 +8,93 @@
         android:layout_height="100dp"
         android:layout_centerVertical="true"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_toRightOf="@id/surfaceview"
-        android:gravity="center">
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/surfaceview">
+        <Button android:id="@+id/btn_center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_circle"
+            android:visibility="invisible"/>
+
+        <xyz.jimbray.rosbridge.customviews.CircleButton android:id="@+id/btn_left"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:text="@string/left"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_center"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_circle"
+            android:gravity="center"/>
+
+        <xyz.jimbray.rosbridge.customviews.CircleButton android:id="@+id/btn_right"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:text="@string/right"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/btn_center"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_circle"
+            android:gravity="center"/>
 
         <xyz.jimbray.rosbridge.customviews.CircleButton android:id="@+id/btn_forward"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="@string/forward"
-            android:layout_margin="15dp"
+            android:layout_above="@id/btn_center"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
             android:background="@drawable/bg_circle"
             android:gravity="center"/>
 
         <xyz.jimbray.rosbridge.customviews.CircleButton android:id="@+id/btn_backward"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="@string/backward"
-            android:layout_above="@id/btn_center"
-            android:layout_margin="15dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/btn_center"
+            android:layout_margin="5dp"
             android:background="@drawable/bg_circle"
             android:gravity="center"/>
 
-    </LinearLayout>
+        <Button android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="停止"
+            android:layout_below="@id/btn_backward"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_toRightOf="@id/surfaceview"-->
+        <!--android:gravity="center"-->
+        <!--android:visibility="gone">-->
+
+        <!--<xyz.jimbray.rosbridge.customviews.CircleButton android:id="@+id/btn_forward"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="@string/forward"-->
+            <!--android:layout_margin="15dp"-->
+            <!--android:background="@drawable/bg_circle"-->
+            <!--android:gravity="center"/>-->
+
+        <!--<xyz.jimbray.rosbridge.customviews.CircleButton android:id="@+id/btn_backward"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="@string/backward"-->
+            <!--android:layout_above="@id/btn_center"-->
+            <!--android:layout_margin="15dp"-->
+            <!--android:background="@drawable/bg_circle"-->
+            <!--android:gravity="center"/>-->
+
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

@@ -7,6 +7,8 @@ public interface ITopicNames {
 
     String TURTLE1_CMD_VEL = "/turtle1/cmd_vel";
 
+    String CMD_VEL = "/cmd_vel";
+
     String CHATTER = "/chatter";
 
     String IMAGE_BASE64_STR = "/image/base64_str";
