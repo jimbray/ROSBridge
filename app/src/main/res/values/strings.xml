@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RosBridge</string>
+    <string name="app_name">CPS-Site</string>
 
     <string name="connecting">Connecting...</string>
 

@@ -197,6 +197,10 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     private String getChineseMessage(String ros_message) {
         String result = ros_message;
         switch (ros_message) {
+            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_START:
+                result = "任务开始";
+                break;
+
             case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_STARTED:
                 result = "上下料机器人开始抓取石材";
                 break;
