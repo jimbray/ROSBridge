@@ -3,15 +3,9 @@ package xyz.jimbray.rosbridge.fragments;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Preconditions;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -21,10 +15,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import org.jboss.netty.buffer.ChannelBuffer;
-
-import java.io.ByteArrayOutputStream;
 
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.messages.ITopicNames;
@@ -109,11 +99,11 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_subscribe:
-                mPresenter.subscribeTopic(ITopicNames.CAMERA_IMAGE_TEST);
+                mPresenter.subscribeTopic(ITopicNames.CAMERA_IMAGE_COMPRESSED);
                 break;
 
             case R.id.btn_unsubscribe:
-                mPresenter.unSubscribeTopic(ITopicNames.CAMERA_IMAGE_TEST);
+                mPresenter.unSubscribeTopic(ITopicNames.CAMERA_IMAGE_COMPRESSED);
                 break;
         }
     }

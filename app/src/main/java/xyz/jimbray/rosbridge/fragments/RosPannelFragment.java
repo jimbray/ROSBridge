@@ -26,9 +26,11 @@ import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.adapters.RosMessageListAdapter;
 import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.data.RosReceivedMessage;
+import xyz.jimbray.rosbridge.messages.ITopicNames;
 import xyz.jimbray.rosbridge.messages.ITopicVrepCPSMessage;
 import xyz.jimbray.rosbridge.messages.RosImageData;
 import xyz.jimbray.rosbridge.messages.RosStringData;
+import xyz.jimbray.rosbridge.messages.SensorInfo;
 import xyz.jimbray.rosbridge.presenters.RosPannelPresenter;
 
 public class RosPannelFragment extends BaseFragment implements RosPannelContract.IRosPannelView {
@@ -66,7 +68,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         super.onCreate(savedInstanceState);
 
         // 需要与topic name list 对应
-        mTopicFragmentList.add(TopicTurtleCmdFragment.newInstance());
+        mTopicFragmentList.add(CpsClientDemoFragment.newInstance());
         mTopicFragmentList.add(TopicVrepCpsFragment.newInstance());
         mTopicFragmentList.add(TopicChatterFragment.newInstance());
         mTopicFragmentList.add(TopicBase64ImageDecodeFragment.newInstance());
@@ -124,12 +126,12 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     @Override
     public void onRosImageMessageeceived(RosImageData imageData) {
         if (imageData != null) {
-            ((TopicRosImageDecodeFragment)mCurFragment).setImage(imageData);
+            ((CpsClientDemoFragment)mCurFragment).setImage(imageData);
         }
     }
 
     @Override
-    public void onRosStringMessageReceived(RosStringData rosStringData) {
+    public void onRosStringMessageReceived(RosStringData rosStringData, String topicName) {
 
 
         String message = rosStringData.data;
@@ -138,7 +140,7 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
         }
 
         String date = mDateFormat.format(new Date());
-        final String chineseStr = getChineseMessage(rosStringData.data);
+        final String chineseStr = getChineseMessage(rosStringData.data, topicName);
 
         if (!TextUtils.isEmpty(chineseStr)) {
             RosReceivedMessage messageData = new RosReceivedMessage(chineseStr, date);
@@ -194,42 +196,62 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
 
     }
 
-    private String getChineseMessage(String ros_message) {
+    private String getChineseMessage(String ros_message, String topicName) {
+
         String result = ros_message;
-        switch (ros_message) {
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_STARTED:
-                result = "上下料机器人开始抓取石材";
-                break;
+        if (topicName.equals(ITopicNames.CPS_STATUS)) {
+            Gson gson = new Gson();
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOADED:
-                result = "上下料机器人抓取石材完毕";
-                break;
+            SensorInfo sensorInfo = gson.fromJson(ros_message, SensorInfo.class);
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_CARRY_COM_START:
-                result = "上下料机器人运输石材中";
-                break;
+            StringBuffer resultBuf = new StringBuffer();
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_CARRY_COMED:
-                result = "抓取石材到指定位置";
-                break;
+            int sensor_num = sensorInfo.getAll_sensor_num();
+            String[] state_array = sensorInfo.getSensor_state().split(" ");
+            String[] data_array = sensorInfo.getSensor_data().split(" ");
+            for (int i = 0; i < sensor_num; i++) {
+                resultBuf.append("传感器(" + sensorInfo.getFrom_sensor_id() + ")状态：" + (state_array[i].equals("1") ? "正常" : "异常") + " | 数值为：" + data_array[i] + "\n");
+            }
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER1:
-                result = "抓取石材到指定位置";
-                break;
+            result = resultBuf.toString();
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER2:
-                result = "安装机器人抓取石材完毕";
-                break;
+        } else {
+            switch (ros_message) {
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_STARTED:
+                    result = "上下料机器人开始抓取石材";
+                    break;
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_LEAVE:
-                result = "上下料机器人离开，安装机器人开始安装";
-                break;
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOADED:
+                    result = "上下料机器人抓取石材完毕";
+                    break;
 
-            case ITopicVrepCPSMessage.MESSAGE_ROBOT_PLANE_INSTALLED:
-                result = "石材安装完毕";
-                break;
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_CARRY_COM_START:
+                    result = "上下料机器人运输石材中";
+                    break;
 
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_CARRY_COMED:
+                    result = "抓取石材到指定位置";
+                    break;
+
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER1:
+                    result = "抓取石材到指定位置";
+                    break;
+
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_PLANE_HANDOVER2:
+                    result = "安装机器人抓取石材完毕";
+                    break;
+
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_LOAD_LEAVE:
+                    result = "上下料机器人离开，安装机器人开始安装";
+                    break;
+
+                case ITopicVrepCPSMessage.MESSAGE_ROBOT_PLANE_INSTALLED:
+                    result = "石材安装完毕";
+                    break;
+
+            }
         }
+
         return result;
     }
 

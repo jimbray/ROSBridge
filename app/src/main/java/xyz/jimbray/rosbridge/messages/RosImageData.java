@@ -1,10 +1,7 @@
 package xyz.jimbray.rosbridge.messages;
 
-import com.jilk.ros.message.Header;
 import com.jilk.ros.message.Message;
 import com.jilk.ros.message.MessageType;
-
-import org.jboss.netty.buffer.ChannelBuffer;
 
 /**
  * Created by jimbray on 2018/11/10.

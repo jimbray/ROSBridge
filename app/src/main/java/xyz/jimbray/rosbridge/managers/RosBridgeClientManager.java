@@ -321,7 +321,7 @@ public class RosBridgeClientManager {
         if (mROSListenerList != null) {
             for (int index = 0 ; index < mROSListenerList.size(); index++) {
                 final int curIndex = index;
-                if (event.name.equals(ITopicNames.CAMERA_IMAGE_TEST)) {
+                if (event.name.equals(ITopicNames.CAMERA_IMAGE_COMPRESSED)) {
                     Observable.create(new ObservableOnSubscribe<RosImageData>() {
                         @Override
                         public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
@@ -380,7 +380,7 @@ public class RosBridgeClientManager {
                                 @Override
                                 public void accept(RosStringData stringData) {
                                     if (curIndex < mROSListenerList.size() && curIndex >= 0) {
-                                        mROSListenerList.get(curIndex).onStringMessageReceive(stringData);
+                                        mROSListenerList.get(curIndex).onStringMessageReceive(stringData, event.name);
                                     }
                                 }
                             });
@@ -392,7 +392,7 @@ public class RosBridgeClientManager {
     }
 
     public interface OnRosMessageListener {
-        void onStringMessageReceive(RosStringData stringData);
+        void onStringMessageReceive(RosStringData stringData, String topicName);
         void onImageMessageReceive(RosImageData imageData);
     }
 

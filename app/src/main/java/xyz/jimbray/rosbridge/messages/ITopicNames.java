@@ -11,6 +11,10 @@ public interface ITopicNames {
 
     String IMAGE_BASE64_STR = "/image/base64_str";
 
-//    String CAMERA_IMAGE_TEST = "/camera/image_test";
-    String CAMERA_IMAGE_TEST = "/usb_cam/image_raw/compressed";
+//    String CAMERA_IMAGE_COMPRESSED = "/camera/image_test";
+    String CAMERA_IMAGE_COMPRESSED = "/usb_cam/image_raw/compressed";
+
+    String CPS_STATUS = "/cps_status";
+
+    String CPS_COMMAND = "/cps_command";
 }
