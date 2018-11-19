@@ -2,6 +2,10 @@ package xyz.jimbray.rosbridge.data;
 
 public class RosReceivedMessage {
 
+    public RosReceivedMessage() {
+
+    }
+
     public RosReceivedMessage(String message , String time) {
         this.message = message;
         this.time = time;

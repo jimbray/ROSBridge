@@ -1,19 +1,16 @@
 package xyz.jimbray.rosbridge.activities
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
-import java.lang.Exception
 import android.view.View
-import xyz.jimbray.rosbridge.messages.RosStringData
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main_old.*
 import xyz.jimbray.rosbridge.BaseActivity
 import xyz.jimbray.rosbridge.R
 import xyz.jimbray.rosbridge.contracts.MainContract
-import xyz.jimbray.rosbridge.managers.RosBridgeClientManager
 import xyz.jimbray.rosbridge.contracts.MainContract.IMainPresenter
-import xyz.jimbray.rosbridge.messages.AndroidChatter
+import xyz.jimbray.rosbridge.managers.RosBridgeClientManager
+import xyz.jimbray.rosbridge.messages.RosStringData
 import xyz.jimbray.rosbridge.presenters.MainPresenter
 
 class MainActivityOld : BaseActivity(), MainContract.IMainView {

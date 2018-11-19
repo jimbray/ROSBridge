@@ -1,9 +1,7 @@
 package xyz.jimbray.rosbridge.ros_common;
 
 import com.jilk.ros.Topic;
-import com.jilk.ros.message.Message;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
-import com.jilk.ros.rosbridge.operation.Advertise;
 
 /**
  * Created by jimbray on 2018/9/28.

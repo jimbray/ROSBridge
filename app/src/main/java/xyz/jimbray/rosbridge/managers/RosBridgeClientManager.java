@@ -7,7 +7,6 @@ import com.jilk.ros.MessageHandler;
 import com.jilk.ros.PublishEvent;
 import com.jilk.ros.ROSClient;
 import com.jilk.ros.Service;
-import com.jilk.ros.Topic;
 import com.jilk.ros.message.Empty;
 import com.jilk.ros.rosapi.message.GetTime;
 import com.jilk.ros.rosbridge.ROSBridgeClient;
@@ -28,7 +27,6 @@ import io.reactivex.schedulers.Schedulers;
 import xyz.jimbray.rosbridge.App;
 import xyz.jimbray.rosbridge.messages.AddTwoInstRequest;
 import xyz.jimbray.rosbridge.messages.AddTwoIntsResponse;
-import xyz.jimbray.rosbridge.messages.AndroidChatter;
 import xyz.jimbray.rosbridge.messages.ITopicNames;
 import xyz.jimbray.rosbridge.messages.RosImageData;
 import xyz.jimbray.rosbridge.messages.RosStringData;
@@ -171,21 +169,21 @@ public class RosBridgeClientManager {
         topic.advertise();
     }
 
-    // 还是需要看看如何设计为 泛型
-    public void advertiseAndroidChatterTopic(String topicName) {
-        //java封装方式
-        Topic<AndroidChatter> chatterTopic = new Topic<>("/android_chatter", AndroidChatter.class, mRosBridgeClient);
-        AndroidChatter chatterData = new AndroidChatter();
-        chatterData.data = "aaaaaaaaaaaa";
-        chatterTopic.advertise(); // 广播 topic
-        chatterTopic.publish(chatterData); // 发布 topic
-        chatterTopic.subscribe(new MessageHandler<AndroidChatter>() { // 订阅topic
-            @Override
-            public void onMessage(AndroidChatter message) {
-                Log.d("android_chatter_tag", message.data);
-            }
-        });
-    }
+//    // 还是需要看看如何设计为 泛型
+//    public void advertiseAndroidChatterTopic(String topicName) {
+//        //java封装方式
+//        Topic<RosStringData> chatterTopic = new Topic<>("/android_chatter", RosStringData.class, mRosBridgeClient);
+//        RosStringData chatterData = new RosStringData();
+//        chatterData.data = "aaaaaaaaaaaa";
+//        chatterTopic.advertise(); // 广播 topic
+//        chatterTopic.publish(chatterData); // 发布 topic
+//        chatterTopic.subscribe(new MessageHandler<RosStringData>() { // 订阅topic
+//            @Override
+//            public void onMessage(RosStringData message) {
+//                Log.d("android_chatter_tag", message.data);
+//            }
+//        });
+//    }
 
     public void subscribeTopic(String topicName, OnRosMessageListener listener) {
 
@@ -380,7 +378,7 @@ public class RosBridgeClientManager {
                                 @Override
                                 public void accept(RosStringData stringData) {
                                     if (curIndex < mROSListenerList.size() && curIndex >= 0) {
-                                        mROSListenerList.get(curIndex).onStringMessageReceive(stringData);
+                                        mROSListenerList.get(curIndex).onStringMessageReceive(event.name, stringData);
                                     }
                                 }
                             });
@@ -392,7 +390,7 @@ public class RosBridgeClientManager {
     }
 
     public interface OnRosMessageListener {
-        void onStringMessageReceive(RosStringData stringData);
+        void onStringMessageReceive(String topicName, RosStringData stringData);
         void onImageMessageReceive(RosImageData imageData);
     }
 

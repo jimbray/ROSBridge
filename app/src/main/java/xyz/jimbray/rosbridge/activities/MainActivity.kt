@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment
 import xyz.jimbray.rosbridge.BaseActivity
 import xyz.jimbray.rosbridge.R
 import xyz.jimbray.rosbridge.fragments.ConnectingFragment
-import xyz.jimbray.rosbridge.fragments.RosPannelFragment
 
 class MainActivity : BaseActivity() {
     private val TAG = MainActivity::class.java.simpleName

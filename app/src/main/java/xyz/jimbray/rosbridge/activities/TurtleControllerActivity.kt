@@ -1,10 +1,10 @@
 package xyz.jimbray.rosbridge.activities
 
 import android.content.Context
-import android.os.Bundle
-import xyz.jimbray.rosbridge.BaseActivity
 import android.content.Intent
+import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_turtle_controller.*
+import xyz.jimbray.rosbridge.BaseActivity
 import xyz.jimbray.rosbridge.R
 import xyz.jimbray.rosbridge.managers.RosBridgeClientManager
 import xyz.jimbray.rosbridge.messages.TwistData

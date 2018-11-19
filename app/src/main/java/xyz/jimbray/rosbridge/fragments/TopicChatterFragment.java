@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import xyz.jimbray.rosbridge.contracts.RosPannelContract;
 import xyz.jimbray.rosbridge.R;
 import xyz.jimbray.rosbridge.messages.ITopicNames;
-import xyz.jimbray.rosbridge.messages.ITopicVrepCPSMessage;
 import xyz.jimbray.rosbridge.messages.RosStringData;
 
 /**

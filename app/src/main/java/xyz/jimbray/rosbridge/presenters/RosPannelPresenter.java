@@ -36,8 +36,8 @@ public class RosPannelPresenter implements RosPannelContract.IRosPannalPresenter
 
     private RosBridgeClientManager.OnRosMessageListener rosMessageListener = new RosBridgeClientManager.OnRosMessageListener() {
         @Override
-        public void onStringMessageReceive(RosStringData stringData) {
-            mView.onRosStringMessageReceived(stringData);
+        public void onStringMessageReceive(String topicName, RosStringData stringData) {
+            mView.onRosStringMessageReceived(topicName, stringData);
         }
 
         @Override
