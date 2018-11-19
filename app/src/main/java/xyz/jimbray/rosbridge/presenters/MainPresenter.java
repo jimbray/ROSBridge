@@ -87,12 +87,12 @@ public class MainPresenter implements MainContract.IMainPresenter {
 
     private RosBridgeClientManager.OnRosMessageListener rosMessageListener = new RosBridgeClientManager.OnRosMessageListener() {
         @Override
-        public void onStringMessageReceive(RosStringData stringData) {
+        public void onStringMessageReceive(String topicName, RosStringData stringData) {
             mView.topicStringMessageReceived(stringData);
         }
 
         @Override
-        public void onImageMessageReceive(RosImageData imageData) {
+        public void onImageMessageReceive(String topicName, RosImageData imageData) {
 
         }
     };

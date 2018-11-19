@@ -58,7 +58,7 @@ class MainActivityOld : BaseActivity(), MainContract.IMainView {
         }
 
         btn_advertise_topic.setOnClickListener {
-            RosBridgeClientManager.getInstance().advertiseTopic("/android_chatter", AndroidChatter())
+            RosBridgeClientManager.getInstance().advertiseTopic("/android_chatter", RosStringData())
         }
     }
 
