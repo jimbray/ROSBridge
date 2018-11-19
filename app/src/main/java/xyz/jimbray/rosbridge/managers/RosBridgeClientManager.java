@@ -71,6 +71,12 @@ public class RosBridgeClientManager {
     }
 
 
+    /**
+     * 连接 ROS master
+     * @param url ROS master IP
+     * @param port ROS master 端口
+     * @param listener 连接状态监听器
+     */
     public void connect(final String url, int port, final ROSClient.ConnectionStatusListener listener) {
         if (url != null && url.equals(mCurUrl)) {
             // already connected
@@ -145,6 +151,12 @@ public class RosBridgeClientManager {
     }
 
 
+    /**
+     * 发布 topic 消息
+     * @param topicName topic名称
+     * @param msg 消息
+     * @param <T> 消息类型
+     */
     public <T> void publishTopic(String topicName, T msg) {
         PublishTopicObject<T> publishTopicObject = new PublishTopicObject<>();
         publishTopicObject.setTopic(topicName);
@@ -164,10 +176,21 @@ public class RosBridgeClientManager {
 
     }
 
+    /**
+     * 注册topic
+     * @param topicName topic 名称
+     * @param data_type 消息类型
+     * @param <T>
+     */
     public <T> void advertiseTopic(String topicName, T data_type) {
         AdvertiseTopicObject<T> topic = new AdvertiseTopicObject<>(topicName, data_type, mRosBridgeClient);
         topic.setMessage_type(data_type);
         topic.advertise();
+
+        // 利用 反射获取泛型
+//        Class <T> entityClass = (Class <T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+//        Topic topic = new Topic(topicName, entityClass, client);
+//        topic.advertise();
     }
 
 //    // 还是需要看看如何设计为 泛型
@@ -186,6 +209,11 @@ public class RosBridgeClientManager {
 //        });
 //    }
 
+    /**
+     * 订阅topic
+     * @param topicName topic 名称
+     * @param listener 消息监听器
+     */
     public void subscribeTopic(String topicName, OnRosMessageListener listener) {
 
         //json方式
@@ -204,6 +232,11 @@ public class RosBridgeClientManager {
 
     }
 
+    /**
+     * 取消订阅topic
+     * @param topicName
+     * @param listener
+     */
     public void unSubscribeTopic(String topicName, OnRosMessageListener listener) {
         UnSubscribeTopicObject unSubscribeTopicObject = new UnSubscribeTopicObject();
         unSubscribeTopicObject.setTopic(topicName);
