@@ -192,6 +192,9 @@ public class CpsClientDemoFragment extends RosPannelTopticBaseFragment implement
 
             case R.id.btn_stop:
                 mPresenter.publishTopic(ITopicNames.CMD_VEL, stop());
+                if (cmdDisposable != null) {
+                    cmdDisposable.dispose();
+                }
                 break;
         }
     }
@@ -401,7 +404,18 @@ public class CpsClientDemoFragment extends RosPannelTopticBaseFragment implement
 
                                     @Override
                                     public void onNext(Long aLong) {
-                                        mPresenter.publishTopic(ITopicNames.CMD_VEL, forward());
+//                                        mPresenter.publishTopic(ITopicNames.CMD_VEL, forward());
+
+                                        FakeCPSCommand command_foward = new FakeCPSCommand();
+                                        command_foward.setMobile_platform_move("foward");
+
+                                        FakeCPSCommand.Header header_forward = new FakeCPSCommand.Header();
+                                        header_forward.setSeq(Integer.parseInt(aLong.toString()));
+                                        header_forward.setStamp(System.currentTimeMillis());
+                                        command_foward.setHeader(header_forward);
+
+                                        RosStringData stringDataForward = new RosStringData(new Gson().toJson(command_foward));
+                                        mPresenter.publishTopic(ITopicNames.CPS_COMMAND, stringDataForward);
                                     }
 
                                     @Override
@@ -426,8 +440,20 @@ public class CpsClientDemoFragment extends RosPannelTopticBaseFragment implement
 
                                     @Override
                                     public void onNext(Long aLong) {
-                                        mPresenter.publishTopic(ITopicNames.CMD_VEL, backward());
+//                                        mPresenter.publishTopic(ITopicNames.CMD_VEL, backward());
+                                        FakeCPSCommand command_backward = new FakeCPSCommand();
+                                        command_backward.setMobile_platform_move("backward");
+
+
+                                        FakeCPSCommand.Header header_backward = new FakeCPSCommand.Header();
+                                        header_backward.setSeq(Integer.parseInt(aLong.toString()));
+                                        header_backward.setStamp(System.currentTimeMillis());
+                                        command_backward.setHeader(header_backward);
+
+                                        RosStringData stringDataBackward = new RosStringData(new Gson().toJson(command_backward));
+                                        mPresenter.publishTopic(ITopicNames.CPS_COMMAND, stringDataBackward);
                                     }
+
 
                                     @Override
                                     public void onError(Throwable e) {
@@ -442,9 +468,9 @@ public class CpsClientDemoFragment extends RosPannelTopticBaseFragment implement
                         break;
                 }
             } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                if (cmdDisposable != null) {
-                    cmdDisposable.dispose();
-                }
+//                if (cmdDisposable != null) {
+//                    cmdDisposable.dispose();
+//                }
             }
 
             return true;
