@@ -21,7 +21,7 @@ public interface RosPannelContract {
 
     interface IRosPannelView extends BaseView<IRosPannalPresenter> {
         void onRosStringMessageReceived(String topicName, RosStringData message);
-        void onRosImageMessageeceived(RosImageData imageData);
+        void onRosImageMessageReceived(String topicName, RosImageData imageData);
     }
 
     interface IRosPannelModel {

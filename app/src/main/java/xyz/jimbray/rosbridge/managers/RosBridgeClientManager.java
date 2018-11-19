@@ -22,6 +22,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xyz.jimbray.rosbridge.App;
@@ -319,8 +320,8 @@ public class RosBridgeClientManager {
         if (mROSListenerList != null) {
             for (int index = 0 ; index < mROSListenerList.size(); index++) {
                 final int curIndex = index;
-                if (event.name.equals(ITopicNames.CAMERA_IMAGE_TEST)) {
-                    Observable.create(new ObservableOnSubscribe<RosImageData>() {
+                if (event.name.equals(ITopicNames.USB_CAM_IMAGE_COMPRESSED)) {
+                    Disposable disposable = Observable.create(new ObservableOnSubscribe<RosImageData>() {
                         @Override
                         public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
                             /*JSONParser jsonParser = new JSONParser();
@@ -357,13 +358,13 @@ public class RosBridgeClientManager {
                                 @Override
                                 public void accept(RosImageData imageData) {
                                     if (curIndex < mROSListenerList.size() && curIndex >= 0) {
-                                        mROSListenerList.get(curIndex).onImageMessageReceive(imageData);
+                                        mROSListenerList.get(curIndex).onImageMessageReceive(event.name, imageData);
                                     }
                                 }
                             });
 
                 } else {
-                    Observable.create(new ObservableOnSubscribe<RosStringData>() {
+                    Disposable disposable = Observable.create(new ObservableOnSubscribe<RosStringData>() {
                         @Override
                         public void subscribe(ObservableEmitter<RosStringData> emitter) throws Exception {
                             JSONParser jsonParser = new JSONParser();
@@ -391,7 +392,7 @@ public class RosBridgeClientManager {
 
     public interface OnRosMessageListener {
         void onStringMessageReceive(String topicName, RosStringData stringData);
-        void onImageMessageReceive(RosImageData imageData);
+        void onImageMessageReceive(String topicName, RosImageData imageData);
     }
 
 }

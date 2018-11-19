@@ -41,8 +41,8 @@ public class RosPannelPresenter implements RosPannelContract.IRosPannalPresenter
         }
 
         @Override
-        public void onImageMessageReceive(RosImageData imageData) {
-            mView.onRosImageMessageeceived(imageData);
+        public void onImageMessageReceive(String topicName, RosImageData imageData) {
+            mView.onRosImageMessageReceived(topicName, imageData);
         }
     };
 }

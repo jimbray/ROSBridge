@@ -2,6 +2,8 @@ package xyz.jimbray.rosbridge.fragments;
 
 import android.view.View;
 
+import xyz.jimbray.rosbridge.messages.RosImageData;
+
 public class ImageDecoderFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
 
 
@@ -11,6 +13,10 @@ public class ImageDecoderFragment extends RosPannelTopticBaseFragment implements
     }
 
     protected void setImage(String base64Str) {
+
+    }
+
+    protected void setImage(RosImageData imageData) {
 
     }
 }

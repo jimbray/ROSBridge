@@ -25,7 +25,7 @@ import xyz.jimbray.rosbridge.messages.RosImageData;
  * Email: jimbray16@gmail.com
  */
 
-public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
+public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
 
     //private ImageView iv_data;
     private SurfaceView sv_data;
@@ -35,7 +35,6 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
 
     private boolean isSurfaceReady = false;
 
-    private boolean iscanDraw = false;
     public static RosPannelTopticBaseFragment newInstance() {
         RosPannelTopticBaseFragment fg = new TopicRosImageDecodeFragment();
         fg.setHasOptionsMenu(true);
@@ -86,7 +85,6 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
             public void surfaceDestroyed(SurfaceHolder holder) {
                 synchronized (this) {
                     isSurfaceReady = false;
-                    iscanDraw = false;
                     mSurfaceHolder.removeCallback(this);
 
                 }
@@ -99,117 +97,53 @@ public class TopicRosImageDecodeFragment extends RosPannelTopticBaseFragment imp
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_subscribe:
-                mPresenter.subscribeTopic(ITopicNames.CAMERA_IMAGE_TEST);
+                mPresenter.subscribeTopic(ITopicNames.USB_CAM_IMAGE_COMPRESSED);
                 break;
 
             case R.id.btn_unsubscribe:
-                mPresenter.unSubscribeTopic(ITopicNames.CAMERA_IMAGE_TEST);
+                mPresenter.unSubscribeTopic(ITopicNames.USB_CAM_IMAGE_COMPRESSED);
                 break;
         }
     }
 
-
-    public void setImage(final RosImageData imageData) {
-
+    @Override
+    protected void setImage(RosImageData imageData) {
         if (TextUtils.isEmpty(imageData.data)) {
             return;
         }
         final byte[] image_byte_array = Base64.decode(imageData.data, Base64.DEFAULT | Base64.NO_WRAP);
 
 
-
-        //if (image_str.equals(oldBase64Str)) {
-        //    return ;
-        //}
-
-        // if (iscanDraw) {
-        //    return;
-        // }
-
-
-        //btn_unsubscribe.performClick();
-
         if (isSurfaceReady) {
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
 
-                    synchronized (mSurfaceHolder) {
+            synchronized (mSurfaceHolder) {
 
-                        /*//Preconditions.checkArgument(imageData.encoding.equals("rgb8"));
-                        Bitmap bitmap = Bitmap.createBitmap((int)imageData.width, (int)imageData.height, Bitmap.Config.ARGB_8888);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, options);
+                Canvas canvas = mSurfaceHolder.lockCanvas();
 
-                        for(int x = 0; x < imageData.width; ++x) {
-                            for(int y = 0; y < imageData.height; ++y) {
-                                ChannelBuffer data = imageData.data;
-                                byte red = data.getByte(y * (int)imageData.step + 3 * x);
-                                byte green = data.getByte(y * (int)imageData.step + 3 * x + 1);
-                                byte blue = data.getByte(y * (int)imageData.step + 3 * x + 2);
-                                bitmap.setPixel(x, y, Color.argb(255, red & 255, green & 255, blue & 255));
-                            }
-                        }*/
+                try {
+                    if (canvas != null) {
+                        canvas.drawBitmap(bmp, 0, 0, null);
+                    }
+                } catch (Exception e) {
 
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPreferredConfig = Bitmap.Config.RGB_565;
-                        Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, options);
-                        Canvas canvas = mSurfaceHolder.lockCanvas();
-
-                        Log.e("jim", "bmp is null !!!");
-                        try {
-                            if (canvas != null) {
-                                canvas.drawBitmap(bmp, 0, 0, null);
-                            }
-                        } catch (Exception e) {
-
-                        } finally {
-                            mSurfaceHolder.unlockCanvasAndPost(canvas);
-                            if (bmp != null) {
-                                bmp.recycle();
-                            }
-                            iscanDraw = true;
-
-                            //mPresenter.subscribeTopic(ITopicNames.IMAGE_BASE64_STR);
-                            Log.d("jimjim", "finished Drawing...");
-                        }
-
-
+                } finally {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    if (bmp != null) {
+                        bmp.recycle();
                     }
 
+                    Log.d("jimjim", "finished Drawing...");
                 }
-            }).start();
 
+
+            }
 
         }
-
-
-
-
-
-        /*
-        glide 显示图片
-        //RequestOptions options = new RequestOptions();
-        //options.dontAnimate();
-        Glide.with(getActivity())
-          //      .applyDefaultRequestOptions(options)
-                .load(image_byte_array)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        btn_subscribe.performClick();
-                        Log.d("image", "load base64 image failed");
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        btn_subscribe.performClick();
-                        Log.d("image", "load base64 image successfuled");
-                        return false;
-                    }
-                })
-                .into(iv_data);
-                */
     }
+
 
 }
