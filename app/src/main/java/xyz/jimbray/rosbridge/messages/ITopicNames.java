@@ -13,4 +13,5 @@ public interface ITopicNames {
 
 //    String USB_CAM_IMAGE_COMPRESSED = "/camera/image_test";
     String USB_CAM_IMAGE_COMPRESSED = "/usb_cam/image_raw/compressed";
+//    String USB_CAM_IMAGE_COMPRESSED = "/image_rod_left";
 }
