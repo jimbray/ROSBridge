@@ -5,8 +5,11 @@
         <item>/turtle1/cmd_vel</item>
         <item>/vrep_cps</item>
         <item>/chatter</item>
-        <item>/image/base64_str</item>
+        <item>/usb_cam/image_raw/</item>
         <item>/usb_cam/image_raw/compressed</item>
+        <item>/image_tag</item>
+        <item>/image_rod_left</item>
+        <item>/image_rod_right</item>
         <!--<item>/image/base64_str/glide</item>-->
     </string-array>
 

@@ -87,10 +87,13 @@ public class TopicBase64ImageGlideFragment extends ImageDecoderFragment {
 
     @Override
     protected void setImage(String base64Str) {
+
+
+
         if (TextUtils.isEmpty(base64Str)) {
             return;
         }
-        byte[] image_byte_array = Base64.decode(base64Str, Base64.NO_WRAP);
+        final byte[] image_byte_array = Base64.decode(base64Str, Base64.NO_WRAP);
 
         if (base64Str.equals(oldBase64Str)) {
             return ;
@@ -100,23 +103,31 @@ public class TopicBase64ImageGlideFragment extends ImageDecoderFragment {
         oldBase64Str = base64Str;
         //RequestOptions options = new RequestOptions();
         //options.dontAnimate();
-        Glide.with(getActivity())
-                //      .applyDefaultRequestOptions(options)
-                .load(image_byte_array)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.d("image", "load base64 image failed");
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d("image", "load base64 image successfuled");
-                        return false;
-                    }
-                })
-                .into(iv_data);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(getActivity())
+                        //      .applyDefaultRequestOptions(options)
+                        .load(image_byte_array)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                Log.d("image", "load base64 image failed");
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                Log.d("image", "load base64 image successfuled");
+                                return false;
+                            }
+                        })
+                        .into(iv_data);
+            }
+        });
+
     }
 
 }

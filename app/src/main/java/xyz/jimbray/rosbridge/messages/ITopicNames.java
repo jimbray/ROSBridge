@@ -9,9 +9,14 @@ public interface ITopicNames {
 
     String CHATTER = "/chatter";
 
-    String IMAGE_BASE64_STR = "/image/base64_str";
+//    String IMAGE_BASE64_STR = "/image/base64_str";
+    String IMAGE_BASE64_STR = "/usb_cam/image_raw";
 
 //    String USB_CAM_IMAGE_COMPRESSED = "/camera/image_test";
     String USB_CAM_IMAGE_COMPRESSED = "/usb_cam/image_raw/compressed";
-//    String USB_CAM_IMAGE_COMPRESSED = "/image_rod_left";
+    String USB_CAM_IMAGE_RAW = "/usb_cam/image_raw";
+
+    String IMAGE_ROD_LEFT = "/image_rod_left";
+    String IMAGE_ROD_RIGHT = "/image_rod_right";
+    String IMAGE_TAG = "/image_tag";
 }

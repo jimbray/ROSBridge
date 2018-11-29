@@ -25,7 +25,7 @@ import xyz.jimbray.rosbridge.messages.RosImageData;
  * Email: jimbray16@gmail.com
  */
 
-public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
+public class TopicRosConpressedImageDecodeFragment extends ImageDecoderFragment {
 
     //private ImageView iv_data;
     private SurfaceView sv_data;
@@ -35,16 +35,9 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
 
     private boolean isSurfaceReady = false;
 
-    public static String KEY_TOPIC = "key_topic";
-
-    public static RosPannelTopticBaseFragment newInstance(String topic) {
-        RosPannelTopticBaseFragment fg = new TopicRosImageDecodeFragment();
+    public static RosPannelTopticBaseFragment newInstance() {
+        RosPannelTopticBaseFragment fg = new TopicRosConpressedImageDecodeFragment();
         fg.setHasOptionsMenu(true);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_TOPIC, topic);
-
-        fg.setArguments(bundle);
 
         return fg;
     }
@@ -52,7 +45,6 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCurTopic = getArguments().getString(KEY_TOPIC);
     }
 
     @Nullable
@@ -105,11 +97,11 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_subscribe:
-                mPresenter.subscribeTopic(mCurTopic);
+                mPresenter.subscribeTopic(ITopicNames.USB_CAM_IMAGE_COMPRESSED);
                 break;
 
             case R.id.btn_unsubscribe:
-                mPresenter.unSubscribeTopic(mCurTopic);
+                mPresenter.unSubscribeTopic(ITopicNames.USB_CAM_IMAGE_COMPRESSED);
                 break;
         }
     }
@@ -122,6 +114,7 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
 
         final byte[] image_byte_array = Base64.decode(imageData.data, Base64.NO_WRAP);
 
+        String original_string = Base64.encodeToString(image_byte_array, Base64.NO_WRAP);
 
         if (isSurfaceReady) {
 

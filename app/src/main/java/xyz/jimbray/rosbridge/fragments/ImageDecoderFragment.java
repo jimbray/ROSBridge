@@ -6,6 +6,7 @@ import xyz.jimbray.rosbridge.messages.RosImageData;
 
 public class ImageDecoderFragment extends RosPannelTopticBaseFragment implements View.OnClickListener {
 
+    protected String mCurTopic;
 
     @Override
     public void onClick(View view) {
