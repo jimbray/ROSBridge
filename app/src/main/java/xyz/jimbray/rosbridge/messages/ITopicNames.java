@@ -16,7 +16,7 @@ public interface ITopicNames {
     String USB_CAM_IMAGE_COMPRESSED = "/usb_cam/image_raw/compressed";
     String USB_CAM_IMAGE_RAW = "/usb_cam/image_raw";
 
-    String IMAGE_ROD_LEFT = "/image_rod_left";
-    String IMAGE_ROD_RIGHT = "/image_rod_right";
-    String IMAGE_TAG = "/image_tag_compressed/compressed";
+    String IMAGE_ROD_LEFT = "/image_rod_left/compressed";
+    String IMAGE_ROD_RIGHT = "/image_rod_right/compressed";
+    String IMAGE_TAG = "/image_tag/compressed";
 }

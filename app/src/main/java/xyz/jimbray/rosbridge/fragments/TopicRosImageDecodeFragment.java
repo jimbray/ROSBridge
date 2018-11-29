@@ -3,6 +3,7 @@ package xyz.jimbray.rosbridge.fragments;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -131,11 +132,30 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
                 Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, null);
+
+                // 修改显示大小
+                // camera右侧3/4的宽度拿来显示图像，?
+                float targetWidth = 0f;
+                float targetHeight = 0f;
+                if (bmp.getWidth() > bmp.getHeight()) { // 横图
+                    targetWidth = sv_data.getMeasuredWidth(); // 使用宽度定位
+                    targetHeight = bmp.getHeight()*targetWidth/bmp.getWidth(); //由宽度决定高度（等比缩放）
+                } else { // 竖图或方图
+                    targetHeight = sv_data.getMeasuredHeight(); // 使用高度定位
+                    targetWidth = bmp.getWidth()*targetHeight/bmp.getHeight();//由宽度决定高度（等比缩放）
+                }
+
+                // 取得想要缩放的matrix參數
+                Matrix matrix = new Matrix();
+                matrix.postScale(targetWidth/bmp.getWidth(), targetHeight/bmp.getHeight());
+                // 得到新的圖片
+                Bitmap newbm = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix,true);
+
                 Canvas canvas = mSurfaceHolder.lockCanvas();
 
                 try {
                     if (canvas != null) {
-                        canvas.drawBitmap(bmp, 0, 0, null);
+                        canvas.drawBitmap(newbm, 0, 0, null);
                     }
                 } catch (Exception e) {
 
@@ -143,6 +163,10 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
                     mSurfaceHolder.unlockCanvasAndPost(canvas);
                     if (bmp != null) {
                         bmp.recycle();
+                    }
+
+                    if (newbm != null) {
+                        newbm.recycle();
                     }
 
                     Log.d("jimjim", "finished Drawing...");
@@ -160,21 +184,37 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
     protected void setImage(String base64Str) {
         final byte[] image_byte_array = Base64.decode(base64Str, Base64.DEFAULT | Base64.NO_WRAP);
 
-        String original_string = Base64.encodeToString(image_byte_array, Base64.NO_WRAP);
-
         if (isSurfaceReady) {
-
-
             synchronized (mSurfaceHolder) {
 
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.RGB_565;
                 Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, options);
+
+
+                // 修改显示大小
+                // camera右侧3/4的宽度拿来显示图像，?
+                float targetWidth = 0f;
+                float targetHeight = 0f;
+                if (bmp.getWidth() > bmp.getHeight()) { // 横图
+                    targetWidth = sv_data.getMeasuredWidth(); // 使用宽度定位
+                    targetHeight = bmp.getHeight()*targetWidth/bmp.getWidth(); //由宽度决定高度（等比缩放）
+                } else { // 竖图或方图
+                    targetHeight = sv_data.getMeasuredHeight(); // 使用高度定位
+                    targetWidth = bmp.getWidth()*targetHeight/bmp.getHeight();//由宽度决定高度（等比缩放）
+                }
+
+                // 取得想要缩放的matrix參數
+                Matrix matrix = new Matrix();
+                matrix.postScale(targetWidth/bmp.getWidth(), targetHeight/bmp.getHeight());
+                // 得到新的圖片
+                Bitmap newbm = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix,true);
+
                 Canvas canvas = mSurfaceHolder.lockCanvas();
 
                 try {
                     if (canvas != null) {
-                        canvas.drawBitmap(bmp, 0, 0, null);
+                        canvas.drawBitmap(newbm, 0, 0, null);
                     }
                 } catch (Exception e) {
 
@@ -184,6 +224,10 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
                         bmp.recycle();
                     }
 
+                    if (newbm != null) {
+                        newbm.recycle();
+                    }
+
                     Log.d("jimjim", "finished Drawing...");
                 }
 
@@ -191,5 +235,11 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
             }
 
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mPresenter.unSubscribeTopic(mCurTopic);
     }
 }

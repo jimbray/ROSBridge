@@ -7,9 +7,9 @@
         <item>/chatter</item>
         <item>/usb_cam/image_raw/</item>
         <item>/usb_cam/image_raw/compressed</item>
-        <item>/image_tag</item>
-        <item>/image_rod_left</item>
-        <item>/image_rod_right</item>
+        <item>/image_tag/compressed</item>
+        <item>/image_rod_left/compressed</item>
+        <item>/image_rod_right/compressed</item>
         <!--<item>/image/base64_str/glide</item>-->
     </string-array>
 
