@@ -18,5 +18,5 @@ public interface ITopicNames {
 
     String IMAGE_ROD_LEFT = "/image_rod_left";
     String IMAGE_ROD_RIGHT = "/image_rod_right";
-    String IMAGE_TAG = "/image_tag";
+    String IMAGE_TAG = "/image_tag_compressed/compressed";
 }

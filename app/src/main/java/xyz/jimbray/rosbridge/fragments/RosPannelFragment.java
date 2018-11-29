@@ -135,7 +135,11 @@ public class RosPannelFragment extends BaseFragment implements RosPannelContract
     @Override
     public void onRosImageMessageReceived(String topicName, RosImageData imageData) {
         if (imageData != null) {
-            if (topicName.equals(ITopicNames.USB_CAM_IMAGE_COMPRESSED)) {
+            if (topicName.equals(ITopicNames.USB_CAM_IMAGE_COMPRESSED) ||
+                    topicName.equals(ITopicNames.USB_CAM_IMAGE_RAW) ||
+                    topicName.equals(ITopicNames.IMAGE_TAG) ||
+                    topicName.equals(ITopicNames.IMAGE_ROD_LEFT) ||
+                    topicName.equals(ITopicNames.IMAGE_ROD_RIGHT)) {
                 if (mCurFragment instanceof ImageDecoderFragment) {
                     ((ImageDecoderFragment)mCurFragment).setImage(imageData);
                 }

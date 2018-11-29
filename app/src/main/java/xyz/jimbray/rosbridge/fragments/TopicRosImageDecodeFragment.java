@@ -120,7 +120,7 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
             return;
         }
 
-        final byte[] image_byte_array = Base64.decode(imageData.data, Base64.NO_WRAP);
+        final byte[] image_byte_array = Base64.decode(imageData.data, Base64.NO_PADDING);
 
 
         if (isSurfaceReady) {
@@ -128,8 +128,8 @@ public class TopicRosImageDecodeFragment extends ImageDecoderFragment {
 
             synchronized (mSurfaceHolder) {
 
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
                 Bitmap bmp = BitmapFactory.decodeByteArray(image_byte_array, 0, image_byte_array.length, null);
                 Canvas canvas = mSurfaceHolder.lockCanvas();
 

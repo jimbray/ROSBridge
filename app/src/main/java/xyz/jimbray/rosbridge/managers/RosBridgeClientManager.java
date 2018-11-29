@@ -353,7 +353,11 @@ public class RosBridgeClientManager {
         if (mROSListenerList != null) {
             for (int index = 0 ; index < mROSListenerList.size(); index++) {
                 final int curIndex = index;
-                if (event.name.equals(ITopicNames.USB_CAM_IMAGE_COMPRESSED)) {
+                if (event.name.equals(ITopicNames.USB_CAM_IMAGE_COMPRESSED) ||
+                        event.name.equals(ITopicNames.USB_CAM_IMAGE_RAW) ||
+                        event.name.equals(ITopicNames.IMAGE_TAG) ||
+                        event.name.equals(ITopicNames.IMAGE_ROD_LEFT) ||
+                        event.name.equals(ITopicNames.IMAGE_ROD_RIGHT)) {
                     Disposable disposable = Observable.create(new ObservableOnSubscribe<RosImageData>() {
                         @Override
                         public void subscribe(ObservableEmitter<RosImageData> emitter) throws Exception {
